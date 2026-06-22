@@ -1,24 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  Search,
   Crown,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
   Clock,
   MapPin,
   Filter,
   ArrowUpRight,
-  Menu,
-  X,
-  Mail,
-  Phone,
-  Instagram,
-  Facebook,
-  Linkedin,
-  Youtube,
 } from "lucide-react";
+import { SiteShell } from "@/components/site/SiteLayout";
+import { slugify } from "@/lib/slug";
 
 import hero from "@/assets/hero-royalle.jpg";
 import catEstrada from "@/assets/cat-estrada.jpg";
@@ -69,16 +61,6 @@ export const Route = createFileRoute("/")({
   }),
   component: RoyalleHome,
 });
-
-const NAV = [
-  { label: "Home", href: "/" },
-  { label: "Sobre", href: "/sobre" },
-  { label: "Serviços", href: "/servicos" },
-  { label: "Whitelabel", href: "/whitelabel" },
-  { label: "Parcerias", href: "/parcerias" },
-  { label: "Planos", href: "/planos" },
-  { label: "Contato", href: "/contato" },
-];
 
 const CATEGORIES = [
   { name: "Pé na estrada", img: catEstrada },
