@@ -567,78 +567,20 @@ function Newsletter() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="bg-[color:var(--midnight)] text-[color:var(--ivory)]">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-        <div>
-          <div className="flex items-center gap-3">
-            <span className="grid h-12 w-12 place-items-center rounded-full border border-[color:var(--gold)]">
-              <Crown className="h-5 w-5 text-[color:var(--gold)]" strokeWidth={1.3} />
-            </span>
-            <div>
-              <div className="font-display text-3xl">Royalle</div>
-              <div className="text-[0.65rem] uppercase tracking-[0.4em] text-[color:var(--gold)]">royalle.club</div>
-            </div>
-          </div>
-          <p className="mt-6 max-w-sm text-sm text-[color:var(--ivory)]/60">
-            Um clube de benefícios premium para quem entende que a vida boa
-            é feita de pequenas e grandes regalias — criteriosamente escolhidas.
-          </p>
-          <div className="mt-6 flex gap-3">
-            {[Instagram, Facebook, Linkedin, Youtube].map((Icon, i) => (
-              <a key={i} href="#" className="grid h-10 w-10 place-items-center rounded-full border border-[color:var(--gold)]/40 transition hover:border-[color:var(--gold)] hover:bg-[color:var(--gold)] hover:text-[color:var(--midnight)]">
-                <Icon className="h-4 w-4" />
-              </a>
-            ))}
-          </div>
-        </div>
-        {[
-          { t: "Clube", links: ["Sobre", "Como funciona", "Planos", "Whitelabel"] },
-          { t: "Membros", links: ["Entrar", "Cadastrar", "Indicar", "Suporte"] },
-          { t: "Legal", links: ["Termos de uso", "Privacidade", "Cookies", "Imprensa"] },
-        ].map((col) => (
-          <div key={col.t}>
-            <div className="mb-5 text-[0.7rem] uppercase tracking-[0.4em] text-[color:var(--gold)]">{col.t}</div>
-            <ul className="space-y-3 text-sm text-[color:var(--ivory)]/70">
-              {col.links.map((l) => (
-                <li key={l}><a href="#" className="transition hover:text-[color:var(--gold)]">{l}</a></li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-      <div className="border-t border-[color:var(--gold)]/20">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-6 text-xs text-[color:var(--ivory)]/50 md:flex-row">
-          <div>© 2016—2026 Royalle Club. Todos os direitos reservados.</div>
-          <div className="flex items-center gap-6">
-            <span className="inline-flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-[color:var(--gold)]" /> contato@royalle.club</span>
-            <span className="inline-flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-[color:var(--gold)]" /> +55 (11) 4000-2026</span>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 function RoyalleHome() {
   return (
-    <div className="bg-[color:var(--ivory)] text-[color:var(--foreground)]">
-      <Header />
-      <main>
-        <CategoriesCircles />
-        <HeroCarousel />
-        <MostAccessed />
-        <QuickCategories />
-        <FlashOffers />
-        <Recent />
-        <FeaturedBanners />
-        <Moments />
-        <AllBenefits />
-        <Blog />
-        <Newsletter />
-      </main>
-      <Footer />
-    </div>
+    <SiteShell>
+      <CategoriesCircles />
+      <HeroCarousel />
+      <MostAccessed />
+      <QuickCategories />
+      <FlashOffers />
+      <Recent />
+      <FeaturedBanners />
+      <Moments />
+      <AllBenefits />
+      <Blog />
+      <Newsletter />
+    </SiteShell>
   );
 }
