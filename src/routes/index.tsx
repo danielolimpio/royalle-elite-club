@@ -333,7 +333,7 @@ function HeroCarousel() {
               <div className="absolute inset-0 bg-gradient-to-r from-[color:var(--midnight)]/95 via-[color:var(--midnight)]/70 to-transparent" />
             </div>
           ))}
-          <div className="relative grid min-h-[440px] grid-cols-1 items-center px-8 py-12 md:min-h-[520px] md:px-16">
+          <div className="relative grid min-h-[220px] grid-cols-1 items-center px-8 py-6 md:min-h-[260px] md:px-16">
             <div className="max-w-xl text-[color:var(--ivory)]">
               <div className="ornament mb-5" style={{ color: "var(--gold)" }}>{SLIDES[i].eyebrow}</div>
               <h1 className="font-display text-4xl leading-tight md:text-6xl">
@@ -460,7 +460,7 @@ function FlashOffers() {
           <div className="absolute inset-0 gradient-midnight" />
           <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-[color:var(--gold)]/10 blur-3xl" />
           <div className="absolute -bottom-20 left-1/3 h-60 w-60 rounded-full bg-[color:var(--burgundy)]/30 blur-3xl" />
-          <div className="relative grid gap-10 px-8 py-12 md:grid-cols-[1.4fr_1fr] md:px-14 md:py-16">
+          <div className="relative grid gap-6 px-8 py-6 md:grid-cols-[1.4fr_1fr] md:px-14 md:py-8">
             <div className="text-[color:var(--ivory)]">
               <div className="ornament mb-4" style={{ color: "var(--gold)" }}>
                 <Clock className="h-3 w-3" /> Janela limitada
@@ -517,7 +517,7 @@ function FeaturedBanners() {
     <section className="pb-20">
       <div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-3">
         {FEATURED.map((f) => (
-          <a key={f.title} href="#" className="group relative aspect-[4/5] overflow-hidden border border-[color:var(--gold)]/30 shadow-soft">
+          <a key={f.title} href="#" className="group relative aspect-[5/3] overflow-hidden border border-[color:var(--gold)]/30 shadow-soft">
             <img src={f.img} alt={f.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--midnight)] via-[color:var(--midnight)]/40 to-transparent" />
             <div className="absolute inset-0 flex flex-col justify-end p-8 text-[color:var(--ivory)]">
