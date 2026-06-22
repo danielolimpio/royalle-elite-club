@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CheckoutPlanRouteImport } from './routes/checkout.$plan'
+import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -34,17 +35,24 @@ const CheckoutPlanRoute = CheckoutPlanRouteImport.update({
   path: '/checkout/$plan',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
+  id: '/categoria/$slug',
+  path: '/categoria/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cadastro' | '/login' | '/checkout/$plan'
+  fullPaths:
+    | '/'
+    | '/cadastro'
+    | '/login'
+    | '/categoria/$slug'
+    | '/checkout/$plan'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cadastro' | '/login' | '/checkout/$plan'
-  id: '__root__' | '/' | '/cadastro' | '/login' | '/checkout/$plan'
+  to: '/' | '/cadastro' | '/login' | '/categoria/$slug' | '/checkout/$plan'
+  id:
+    | '__root__'
+    | '/'
+    | '/cadastro'
+    | '/login'
+    | '/categoria/$slug'
+    | '/checkout/$plan'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CadastroRoute: typeof CadastroRoute
   LoginRoute: typeof LoginRoute
+  CategoriaSlugRoute: typeof CategoriaSlugRoute
   CheckoutPlanRoute: typeof CheckoutPlanRoute
 }
 
@@ -99,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutPlanRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categoria/$slug': {
+      id: '/categoria/$slug'
+      path: '/categoria/$slug'
+      fullPath: '/categoria/$slug'
+      preLoaderRoute: typeof CategoriaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -106,6 +134,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CadastroRoute: CadastroRoute,
   LoginRoute: LoginRoute,
+  CategoriaSlugRoute: CategoriaSlugRoute,
   CheckoutPlanRoute: CheckoutPlanRoute,
 }
 export const routeTree = rootRouteImport
