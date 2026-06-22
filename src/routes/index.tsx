@@ -1,24 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  Search,
   Crown,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
   Clock,
   MapPin,
   Filter,
   ArrowUpRight,
-  Menu,
-  X,
-  Mail,
-  Phone,
-  Instagram,
-  Facebook,
-  Linkedin,
-  Youtube,
 } from "lucide-react";
+import { SiteShell } from "@/components/site/SiteLayout";
+import { slugify } from "@/lib/slug";
 
 import hero from "@/assets/hero-royalle.jpg";
 import catEstrada from "@/assets/cat-estrada.jpg";
@@ -69,16 +61,6 @@ export const Route = createFileRoute("/")({
   }),
   component: RoyalleHome,
 });
-
-const NAV = [
-  { label: "Home", href: "/" },
-  { label: "Sobre", href: "/sobre" },
-  { label: "Serviços", href: "/servicos" },
-  { label: "Whitelabel", href: "/whitelabel" },
-  { label: "Parcerias", href: "/parcerias" },
-  { label: "Planos", href: "/planos" },
-  { label: "Contato", href: "/contato" },
-];
 
 const CATEGORIES = [
   { name: "Pé na estrada", img: catEstrada },
@@ -184,101 +166,6 @@ const POSTS = [
   { img: blog3, tag: "Viagem", title: "Roteiros premium pela Europa com cashback Royalle Travel", date: "11 Jun 2026" },
 ];
 
-function Logo({ className = "" }: { className?: string }) {
-  return (
-    <Link to="/" className={`group inline-flex items-center gap-3 ${className}`}>
-      <span className="relative grid h-11 w-11 place-items-center rounded-full border border-[color-mix(in_oklab,var(--gold)_50%,transparent)] bg-[color:var(--midnight)]">
-        <Crown className="h-5 w-5 text-[color:var(--gold)]" strokeWidth={1.5} />
-      </span>
-      <span className="flex flex-col leading-none">
-        <span className="font-display text-2xl tracking-wide text-[color:var(--midnight)]">
-          Royalle
-        </span>
-        <span className="text-[0.6rem] uppercase tracking-[0.4em] text-[color:var(--gold-deep)]">
-          Club · royalle.club
-        </span>
-      </span>
-    </Link>
-  );
-}
-
-function Header() {
-  const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 8);
-    fn();
-    window.addEventListener("scroll", fn, { passive: true });
-    return () => window.removeEventListener("scroll", fn);
-  }, []);
-  return (
-    <>
-      <div className="bg-[color:var(--midnight)] text-[color:var(--gold)]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[0.7rem] uppercase tracking-[0.3em]">
-          <span className="hidden sm:inline">✦ Experiências curadas para membros</span>
-          <span className="opacity-80">Convide a corte · ganhe 1 mês Royalle Black</span>
-          <span className="hidden sm:inline">+55 (11) 4000 · 2026</span>
-        </div>
-      </div>
-      <header
-        className={`sticky top-0 z-40 border-b border-[color:var(--border)] transition-all ${
-          scrolled ? "bg-[color:var(--ivory)]/95 backdrop-blur shadow-soft" : "bg-[color:var(--ivory)]"
-        }`}
-      >
-        <div className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-4">
-          <Logo />
-          <div className="ml-auto hidden flex-1 max-w-lg lg:block">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--muted-foreground)]" />
-              <input
-                placeholder="O que você procura hoje?"
-                className="h-11 w-full rounded-full border border-[color:var(--border)] bg-white pl-11 pr-32 text-sm outline-none transition focus:border-[color:var(--gold)]"
-              />
-              <button className="absolute right-1 top-1 h-9 rounded-full bg-[color:var(--midnight)] px-4 text-xs uppercase tracking-[0.25em] text-[color:var(--gold)] hover:bg-[color:var(--midnight-2)]">
-                Buscar
-              </button>
-            </div>
-          </div>
-          <nav className="hidden items-center gap-7 text-sm xl:flex">
-            {NAV.map((n) => (
-              <a key={n.label} href={n.href} className="relative text-[color:var(--midnight)] transition hover:text-[color:var(--gold-deep)]">
-                {n.label}
-              </a>
-            ))}
-          </nav>
-          <a
-            href="/login"
-            className="hidden items-center gap-2 rounded-full border border-[color:var(--midnight)] px-5 py-2 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--midnight)] hover:text-[color:var(--gold)] md:inline-flex"
-          >
-            Entrar
-          </a>
-          <button
-            onClick={() => setOpen(!open)}
-            className="grid h-10 w-10 place-items-center rounded-full border border-[color:var(--border)] xl:hidden"
-            aria-label="Menu"
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-        {open && (
-          <div className="border-t border-[color:var(--border)] bg-[color:var(--ivory)] xl:hidden">
-            <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-6 py-4">
-              {NAV.map((n) => (
-                <a key={n.label} href={n.href} className="rounded-md px-3 py-3 text-sm hover:bg-[color:var(--muted)]">
-                  {n.label}
-                </a>
-              ))}
-              <a href="/login" className="mt-2 rounded-full bg-[color:var(--midnight)] px-4 py-3 text-center text-xs uppercase tracking-[0.3em] text-[color:var(--gold)]">
-                Entrar
-              </a>
-            </nav>
-          </div>
-        )}
-      </header>
-    </>
-  );
-}
-
 function SectionTitle({ kicker, title, action }: { kicker?: string; title: string; action?: string }) {
   return (
     <div className="mb-8 flex items-end justify-between gap-6">
@@ -304,7 +191,7 @@ function CategoriesCircles() {
         </div>
         <div className="hide-scrollbar -mx-6 flex gap-6 overflow-x-auto px-6 md:grid md:grid-cols-5 md:overflow-visible lg:grid-cols-10">
           {CATEGORIES.map((c) => (
-            <a key={c.name} href="#" className="group flex shrink-0 flex-col items-center gap-3 md:shrink">
+            <Link key={c.name} to="/categoria/$slug" params={{ slug: slugify(c.name) }} className="group flex shrink-0 flex-col items-center gap-3 md:shrink">
               <div className="relative">
                 <div className="absolute inset-0 -m-1 rounded-full bg-gradient-to-br from-[color:var(--gold)] via-transparent to-[color:var(--gold-deep)] opacity-0 blur-md transition group-hover:opacity-100" />
                 <div className="relative h-20 w-20 overflow-hidden rounded-full border border-[color:var(--gold)] shadow-soft transition group-hover:scale-105">
@@ -312,7 +199,7 @@ function CategoriesCircles() {
                 </div>
               </div>
               <span className="text-center text-xs font-medium text-[color:var(--midnight)]">{c.name}</span>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -351,12 +238,12 @@ function HeroCarousel() {
                 {SLIDES[i].desc}
               </p>
               <div className="mt-8 flex gap-3">
-                <a href="#" className="inline-flex items-center gap-2 bg-[color:var(--gold)] px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--ivory)]">
+                <Link to="/login" className="inline-flex items-center gap-2 bg-[color:var(--gold)] px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--ivory)]">
                   {SLIDES[i].cta}
-                </a>
-                <a href="#" className="inline-flex items-center gap-2 border border-[color:var(--ivory)]/30 px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--ivory)] transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]">
+                </Link>
+                <Link to="/cadastro" className="inline-flex items-center gap-2 border border-[color:var(--ivory)]/30 px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--ivory)] transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]">
                   Saber mais
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -400,7 +287,7 @@ function MostAccessed() {
         <SectionTitle kicker="Curadoria" title="Benefícios mais acessados" action="Ver todos" />
         <div className="hide-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
           {TOP_BRANDS.map((b) => (
-            <a key={b.name} href="#" className="luxe-card group flex w-56 shrink-0 flex-col justify-between p-6">
+            <Link key={b.name} to="/login" className="luxe-card group flex w-56 shrink-0 flex-col justify-between p-6">
               <BrandMark name={b.name} />
               <div className="mt-6 border-t border-dashed border-[color:var(--gold)]/40 pt-4 text-center">
                 <div className="text-[0.65rem] uppercase tracking-[0.3em] text-[color:var(--gold-deep)]">{b.desc}</div>
@@ -408,7 +295,7 @@ function MostAccessed() {
                   Acessar <ArrowUpRight className="h-3 w-3" />
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -423,14 +310,14 @@ function QuickCategories() {
         <SectionTitle kicker="Navegue" title="Categorias" action="Ver mais" />
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {QUICK_CATS.map((c) => (
-            <a key={c.label} href="#" className="group flex items-center gap-0 overflow-hidden rounded-sm border border-[color:var(--border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+            <Link key={c.label} to="/categoria/$slug" params={{ slug: slugify(c.label) }} className="group flex items-center gap-0 overflow-hidden rounded-sm border border-[color:var(--border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
               <div className="h-16 w-16 shrink-0 overflow-hidden sm:h-[72px] sm:w-[72px]">
                 <img src={c.img} alt={c.label} className="h-full w-full object-cover transition duration-500 group-hover:scale-110" loading="lazy" />
               </div>
               <div className="flex flex-1 items-center px-4">
                 <div className="font-display text-base text-[color:var(--midnight)] sm:text-lg">{c.label}</div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -476,9 +363,9 @@ function FlashOffers() {
                 Corra e aproveite uma seleção privê das melhores maisons com condições reservadas
                 exclusivamente aos membros da corte.
               </p>
-              <a href="#" className="mt-8 inline-flex items-center gap-2 bg-[color:var(--gold)] px-8 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--ivory)]">
+              <Link to="/ofertas-relampago" className="mt-8 inline-flex items-center gap-2 bg-[color:var(--gold)] px-8 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--ivory)]">
                 Aproveitar agora <ArrowUpRight className="h-3.5 w-3.5" />
-              </a>
+              </Link>
             </div>
             <div className="flex items-center justify-around md:justify-end md:gap-6">
               {cell(t.d, "Dias")}<span className="font-display text-3xl text-[color:var(--gold)]/40">:</span>
@@ -500,7 +387,7 @@ function Recent() {
         <SectionTitle kicker="Recém-chegados" title="Benefícios mais recentes" action="Ver todos" />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {RECENT.map((r) => (
-            <a key={r.brand} href="#" className="luxe-card group flex flex-col p-7">
+            <Link key={r.brand} to="/login" className="luxe-card group flex flex-col p-7">
               <span className="inline-flex w-fit items-center gap-1 bg-[color:var(--midnight)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--gold)]">
                 Novo
               </span>
@@ -510,7 +397,7 @@ function Recent() {
               <div className="mt-6 border-t border-dashed border-[color:var(--gold)]/40 pt-4 text-[0.7rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">
                 {r.tag}
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -523,7 +410,7 @@ function FeaturedBanners() {
     <section className="pb-20">
       <div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-3">
         {FEATURED.map((f) => (
-          <a key={f.title} href="#" className="group relative aspect-[5/3] overflow-hidden border border-[color:var(--gold)]/30 shadow-soft">
+          <Link key={f.title} to="/destaque/$slug" params={{ slug: slugify(f.title) }} className="group relative aspect-[5/3] overflow-hidden border border-[color:var(--gold)]/30 shadow-soft">
             <img src={f.img} alt={f.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--midnight)] via-[color:var(--midnight)]/40 to-transparent" />
             <div className="absolute inset-0 flex flex-col justify-end p-8 text-[color:var(--ivory)]">
@@ -534,7 +421,7 @@ function FeaturedBanners() {
                 Eu quero <ArrowUpRight className="h-3 w-3 transition group-hover:translate-x-1" />
               </span>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </section>
@@ -548,7 +435,7 @@ function Moments() {
         <SectionTitle kicker="Ritual" title="Para momentos especiais" action="Ver tudo" />
         <div className="hide-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
           {MOMENTS.map((m) => (
-            <a key={m.label} href="#" className="luxe-card group flex w-60 shrink-0 flex-col items-center p-7">
+            <Link key={m.label} to="/momento/$slug" params={{ slug: slugify(m.label) }} className="luxe-card group flex w-60 shrink-0 flex-col items-center p-7">
               <div className="relative grid h-24 w-24 place-items-center rounded-full bg-[color:var(--midnight)]">
                 <div className="absolute inset-0 rounded-full border border-dashed border-[color:var(--gold)]/40" />
                 <Crown className="h-9 w-9 text-[color:var(--gold)]" strokeWidth={1.3} />
@@ -557,7 +444,7 @@ function Moments() {
               <div className="mt-3 inline-flex items-center bg-[color:var(--midnight)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--gold)]">
                 + {m.tag}
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -599,7 +486,7 @@ function AllBenefits() {
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((b) => (
-            <a key={b.name} href="#" className="luxe-card group flex flex-col p-6">
+            <Link key={b.name} to="/login" className="luxe-card group flex flex-col p-6">
               <BrandMark name={b.name} />
               <h4 className="mt-2 font-display text-lg text-[color:var(--midnight)]">{b.name}</h4>
               <p className="text-xs text-[color:var(--muted-foreground)]">{b.desc}</p>
@@ -609,13 +496,13 @@ function AllBenefits() {
                 </span>
                 <span className="text-[0.65rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">{b.cat}</span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
         <div className="mt-12 text-center">
-          <a href="#" className="inline-flex items-center gap-2 border border-[color:var(--midnight)] px-10 py-4 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--midnight)] hover:text-[color:var(--gold)]">
+          <Link to="/login" className="inline-flex items-center gap-2 border border-[color:var(--midnight)] px-10 py-4 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--midnight)] hover:text-[color:var(--gold)]">
             Ver mais benefícios
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -680,78 +567,20 @@ function Newsletter() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="bg-[color:var(--midnight)] text-[color:var(--ivory)]">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-        <div>
-          <div className="flex items-center gap-3">
-            <span className="grid h-12 w-12 place-items-center rounded-full border border-[color:var(--gold)]">
-              <Crown className="h-5 w-5 text-[color:var(--gold)]" strokeWidth={1.3} />
-            </span>
-            <div>
-              <div className="font-display text-3xl">Royalle</div>
-              <div className="text-[0.65rem] uppercase tracking-[0.4em] text-[color:var(--gold)]">royalle.club</div>
-            </div>
-          </div>
-          <p className="mt-6 max-w-sm text-sm text-[color:var(--ivory)]/60">
-            Um clube de benefícios premium para quem entende que a vida boa
-            é feita de pequenas e grandes regalias — criteriosamente escolhidas.
-          </p>
-          <div className="mt-6 flex gap-3">
-            {[Instagram, Facebook, Linkedin, Youtube].map((Icon, i) => (
-              <a key={i} href="#" className="grid h-10 w-10 place-items-center rounded-full border border-[color:var(--gold)]/40 transition hover:border-[color:var(--gold)] hover:bg-[color:var(--gold)] hover:text-[color:var(--midnight)]">
-                <Icon className="h-4 w-4" />
-              </a>
-            ))}
-          </div>
-        </div>
-        {[
-          { t: "Clube", links: ["Sobre", "Como funciona", "Planos", "Whitelabel"] },
-          { t: "Membros", links: ["Entrar", "Cadastrar", "Indicar", "Suporte"] },
-          { t: "Legal", links: ["Termos de uso", "Privacidade", "Cookies", "Imprensa"] },
-        ].map((col) => (
-          <div key={col.t}>
-            <div className="mb-5 text-[0.7rem] uppercase tracking-[0.4em] text-[color:var(--gold)]">{col.t}</div>
-            <ul className="space-y-3 text-sm text-[color:var(--ivory)]/70">
-              {col.links.map((l) => (
-                <li key={l}><a href="#" className="transition hover:text-[color:var(--gold)]">{l}</a></li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-      <div className="border-t border-[color:var(--gold)]/20">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-6 text-xs text-[color:var(--ivory)]/50 md:flex-row">
-          <div>© 2016—2026 Royalle Club. Todos os direitos reservados.</div>
-          <div className="flex items-center gap-6">
-            <span className="inline-flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-[color:var(--gold)]" /> contato@royalle.club</span>
-            <span className="inline-flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-[color:var(--gold)]" /> +55 (11) 4000-2026</span>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 function RoyalleHome() {
   return (
-    <div className="bg-[color:var(--ivory)] text-[color:var(--foreground)]">
-      <Header />
-      <main>
-        <CategoriesCircles />
-        <HeroCarousel />
-        <MostAccessed />
-        <QuickCategories />
-        <FlashOffers />
-        <Recent />
-        <FeaturedBanners />
-        <Moments />
-        <AllBenefits />
-        <Blog />
-        <Newsletter />
-      </main>
-      <Footer />
-    </div>
+    <SiteShell>
+      <CategoriesCircles />
+      <HeroCarousel />
+      <MostAccessed />
+      <QuickCategories />
+      <FlashOffers />
+      <Recent />
+      <FeaturedBanners />
+      <Moments />
+      <AllBenefits />
+      <Blog />
+      <Newsletter />
+    </SiteShell>
   );
 }

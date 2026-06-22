@@ -9,38 +9,154 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OfertasRelampagoRouteImport } from './routes/ofertas-relampago'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MomentoSlugRouteImport } from './routes/momento.$slug'
+import { Route as DestaqueSlugRouteImport } from './routes/destaque.$slug'
+import { Route as CheckoutPlanRouteImport } from './routes/checkout.$plan'
+import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 
+const OfertasRelampagoRoute = OfertasRelampagoRouteImport.update({
+  id: '/ofertas-relampago',
+  path: '/ofertas-relampago',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CadastroRoute = CadastroRouteImport.update({
+  id: '/cadastro',
+  path: '/cadastro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MomentoSlugRoute = MomentoSlugRouteImport.update({
+  id: '/momento/$slug',
+  path: '/momento/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DestaqueSlugRoute = DestaqueSlugRouteImport.update({
+  id: '/destaque/$slug',
+  path: '/destaque/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutPlanRoute = CheckoutPlanRouteImport.update({
+  id: '/checkout/$plan',
+  path: '/checkout/$plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
+  id: '/categoria/$slug',
+  path: '/categoria/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
+  '/login': typeof LoginRoute
+  '/ofertas-relampago': typeof OfertasRelampagoRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
+  '/checkout/$plan': typeof CheckoutPlanRoute
+  '/destaque/$slug': typeof DestaqueSlugRoute
+  '/momento/$slug': typeof MomentoSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
+  '/login': typeof LoginRoute
+  '/ofertas-relampago': typeof OfertasRelampagoRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
+  '/checkout/$plan': typeof CheckoutPlanRoute
+  '/destaque/$slug': typeof DestaqueSlugRoute
+  '/momento/$slug': typeof MomentoSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cadastro': typeof CadastroRoute
+  '/login': typeof LoginRoute
+  '/ofertas-relampago': typeof OfertasRelampagoRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
+  '/checkout/$plan': typeof CheckoutPlanRoute
+  '/destaque/$slug': typeof DestaqueSlugRoute
+  '/momento/$slug': typeof MomentoSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/cadastro'
+    | '/login'
+    | '/ofertas-relampago'
+    | '/categoria/$slug'
+    | '/checkout/$plan'
+    | '/destaque/$slug'
+    | '/momento/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/cadastro'
+    | '/login'
+    | '/ofertas-relampago'
+    | '/categoria/$slug'
+    | '/checkout/$plan'
+    | '/destaque/$slug'
+    | '/momento/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/cadastro'
+    | '/login'
+    | '/ofertas-relampago'
+    | '/categoria/$slug'
+    | '/checkout/$plan'
+    | '/destaque/$slug'
+    | '/momento/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CadastroRoute: typeof CadastroRoute
+  LoginRoute: typeof LoginRoute
+  OfertasRelampagoRoute: typeof OfertasRelampagoRoute
+  CategoriaSlugRoute: typeof CategoriaSlugRoute
+  CheckoutPlanRoute: typeof CheckoutPlanRoute
+  DestaqueSlugRoute: typeof DestaqueSlugRoute
+  MomentoSlugRoute: typeof MomentoSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ofertas-relampago': {
+      id: '/ofertas-relampago'
+      path: '/ofertas-relampago'
+      fullPath: '/ofertas-relampago'
+      preLoaderRoute: typeof OfertasRelampagoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cadastro': {
+      id: '/cadastro'
+      path: '/cadastro'
+      fullPath: '/cadastro'
+      preLoaderRoute: typeof CadastroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +164,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/momento/$slug': {
+      id: '/momento/$slug'
+      path: '/momento/$slug'
+      fullPath: '/momento/$slug'
+      preLoaderRoute: typeof MomentoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/destaque/$slug': {
+      id: '/destaque/$slug'
+      path: '/destaque/$slug'
+      fullPath: '/destaque/$slug'
+      preLoaderRoute: typeof DestaqueSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/$plan': {
+      id: '/checkout/$plan'
+      path: '/checkout/$plan'
+      fullPath: '/checkout/$plan'
+      preLoaderRoute: typeof CheckoutPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categoria/$slug': {
+      id: '/categoria/$slug'
+      path: '/categoria/$slug'
+      fullPath: '/categoria/$slug'
+      preLoaderRoute: typeof CategoriaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CadastroRoute: CadastroRoute,
+  LoginRoute: LoginRoute,
+  OfertasRelampagoRoute: OfertasRelampagoRoute,
+  CategoriaSlugRoute: CategoriaSlugRoute,
+  CheckoutPlanRoute: CheckoutPlanRoute,
+  DestaqueSlugRoute: DestaqueSlugRoute,
+  MomentoSlugRoute: MomentoSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
