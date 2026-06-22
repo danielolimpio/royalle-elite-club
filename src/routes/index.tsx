@@ -423,15 +423,13 @@ function QuickCategories() {
         <SectionTitle kicker="Navegue" title="Categorias" action="Ver mais" />
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {QUICK_CATS.map((c) => (
-            <a key={c.label} href="#" className="luxe-card group flex items-center gap-4 p-5">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[color:var(--midnight)]">
-                <Sparkles className="h-5 w-5 text-[color:var(--gold)]" />
-              </span>
-              <div>
-                <div className="font-display text-lg text-[color:var(--midnight)]">{c.label}</div>
-                <div className="text-xs text-[color:var(--muted-foreground)]">{c.hint}</div>
+            <a key={c.label} href="#" className="group flex items-center gap-0 overflow-hidden rounded-sm border border-[color:var(--border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+              <div className="h-16 w-16 shrink-0 overflow-hidden sm:h-[72px] sm:w-[72px]">
+                <img src={c.img} alt={c.label} className="h-full w-full object-cover transition duration-500 group-hover:scale-110" loading="lazy" />
               </div>
-              <ArrowUpRight className="ml-auto h-4 w-4 text-[color:var(--gold-deep)] transition group-hover:rotate-45" />
+              <div className="flex flex-1 items-center px-4">
+                <div className="font-display text-base text-[color:var(--midnight)] sm:text-lg">{c.label}</div>
+              </div>
             </a>
           ))}
         </div>
