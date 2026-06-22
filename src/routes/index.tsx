@@ -128,14 +128,14 @@ const TOP_BRANDS = [
 ];
 
 const QUICK_CATS = [
-  { label: "Cashback", hint: "Receba de volta" },
-  { label: "Novidades", hint: "Recém-chegados" },
-  { label: "Gratuitos", hint: "Sem custo" },
-  { label: "Cinema", hint: "Sessões privê" },
-  { label: "Farmácia", hint: "Saúde sempre" },
-  { label: "Sustentabilidade", hint: "Marcas verdes" },
-  { label: "Delivery", hint: "Em casa" },
-  { label: "Eletro", hint: "Para o lar" },
+  { label: "Cashback", hint: "Receba de volta", img: catIconCashback },
+  { label: "Novidades", hint: "Recém-chegados", img: catIconNovidades },
+  { label: "Gratuitos", hint: "Sem custo", img: catIconGratuitos },
+  { label: "Cinema", hint: "Sessões privê", img: catIconCinema },
+  { label: "Farmácia", hint: "Saúde sempre", img: catIconFarmacia },
+  { label: "Sustentabilidade", hint: "Marcas verdes", img: catIconSustentabilidade },
+  { label: "Delivery", hint: "Em casa", img: catIconDelivery },
+  { label: "Eletro", hint: "Para o lar", img: catIconEletro },
 ];
 
 const RECENT = [
