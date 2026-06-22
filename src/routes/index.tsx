@@ -31,6 +31,14 @@ import catComer from "@/assets/cat-comer.jpg";
 import catLar from "@/assets/cat-lar.jpg";
 import catPet from "@/assets/cat-pet.jpg";
 import catAchadinhos from "@/assets/cat-achadinhos.jpg";
+import catIconCashback from "@/assets/cat-icon-cashback.jpg";
+import catIconNovidades from "@/assets/cat-icon-novidades.jpg";
+import catIconGratuitos from "@/assets/cat-icon-gratuitos.jpg";
+import catIconCinema from "@/assets/cat-icon-cinema.jpg";
+import catIconFarmacia from "@/assets/cat-icon-farmacia.jpg";
+import catIconSustentabilidade from "@/assets/cat-icon-sustentabilidade.jpg";
+import catIconDelivery from "@/assets/cat-icon-delivery.jpg";
+import catIconEletro from "@/assets/cat-icon-eletro.jpg";
 import banner1 from "@/assets/banner-1.jpg";
 import banner2 from "@/assets/banner-2.jpg";
 import banner3 from "@/assets/banner-3.jpg";
@@ -120,14 +128,14 @@ const TOP_BRANDS = [
 ];
 
 const QUICK_CATS = [
-  { label: "Cashback", hint: "Receba de volta" },
-  { label: "Novidades", hint: "Recém-chegados" },
-  { label: "Gratuitos", hint: "Sem custo" },
-  { label: "Cinema", hint: "Sessões privê" },
-  { label: "Farmácia", hint: "Saúde sempre" },
-  { label: "Sustentabilidade", hint: "Marcas verdes" },
-  { label: "Delivery", hint: "Em casa" },
-  { label: "Eletro", hint: "Para o lar" },
+  { label: "Cashback", hint: "Receba de volta", img: catIconCashback },
+  { label: "Novidades", hint: "Recém-chegados", img: catIconNovidades },
+  { label: "Gratuitos", hint: "Sem custo", img: catIconGratuitos },
+  { label: "Cinema", hint: "Sessões privê", img: catIconCinema },
+  { label: "Farmácia", hint: "Saúde sempre", img: catIconFarmacia },
+  { label: "Sustentabilidade", hint: "Marcas verdes", img: catIconSustentabilidade },
+  { label: "Delivery", hint: "Em casa", img: catIconDelivery },
+  { label: "Eletro", hint: "Para o lar", img: catIconEletro },
 ];
 
 const RECENT = [
@@ -415,15 +423,13 @@ function QuickCategories() {
         <SectionTitle kicker="Navegue" title="Categorias" action="Ver mais" />
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {QUICK_CATS.map((c) => (
-            <a key={c.label} href="#" className="luxe-card group flex items-center gap-4 p-5">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[color:var(--midnight)]">
-                <Sparkles className="h-5 w-5 text-[color:var(--gold)]" />
-              </span>
-              <div>
-                <div className="font-display text-lg text-[color:var(--midnight)]">{c.label}</div>
-                <div className="text-xs text-[color:var(--muted-foreground)]">{c.hint}</div>
+            <a key={c.label} href="#" className="group flex items-center gap-0 overflow-hidden rounded-sm border border-[color:var(--border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+              <div className="h-16 w-16 shrink-0 overflow-hidden sm:h-[72px] sm:w-[72px]">
+                <img src={c.img} alt={c.label} className="h-full w-full object-cover transition duration-500 group-hover:scale-110" loading="lazy" />
               </div>
-              <ArrowUpRight className="ml-auto h-4 w-4 text-[color:var(--gold-deep)] transition group-hover:rotate-45" />
+              <div className="flex flex-1 items-center px-4">
+                <div className="font-display text-base text-[color:var(--midnight)] sm:text-lg">{c.label}</div>
+              </div>
             </a>
           ))}
         </div>
