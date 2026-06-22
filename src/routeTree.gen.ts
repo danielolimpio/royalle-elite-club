@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MomentoSlugRouteImport } from './routes/momento.$slug'
 import { Route as DestaqueSlugRouteImport } from './routes/destaque.$slug'
 import { Route as CheckoutPlanRouteImport } from './routes/checkout.$plan'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
@@ -29,6 +30,11 @@ const CadastroRoute = CadastroRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MomentoSlugRoute = MomentoSlugRouteImport.update({
+  id: '/momento/$slug',
+  path: '/momento/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DestaqueSlugRoute = DestaqueSlugRouteImport.update({
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
+  '/momento/$slug': typeof MomentoSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
+  '/momento/$slug': typeof MomentoSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
+  '/momento/$slug': typeof MomentoSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
+    | '/momento/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
+    | '/momento/$slug'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
+    | '/momento/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CheckoutPlanRoute: typeof CheckoutPlanRoute
   DestaqueSlugRoute: typeof DestaqueSlugRoute
+  MomentoSlugRoute: typeof MomentoSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -129,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/momento/$slug': {
+      id: '/momento/$slug'
+      path: '/momento/$slug'
+      fullPath: '/momento/$slug'
+      preLoaderRoute: typeof MomentoSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/destaque/$slug': {
@@ -162,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   CategoriaSlugRoute: CategoriaSlugRoute,
   CheckoutPlanRoute: CheckoutPlanRoute,
   DestaqueSlugRoute: DestaqueSlugRoute,
+  MomentoSlugRoute: MomentoSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
