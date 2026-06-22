@@ -191,7 +191,7 @@ function CategoriesCircles() {
         </div>
         <div className="hide-scrollbar -mx-6 flex gap-6 overflow-x-auto px-6 md:grid md:grid-cols-5 md:overflow-visible lg:grid-cols-10">
           {CATEGORIES.map((c) => (
-            <a key={c.name} href="#" className="group flex shrink-0 flex-col items-center gap-3 md:shrink">
+            <Link key={c.name} to="/categoria/$slug" params={{ slug: slugify(c.name) }} className="group flex shrink-0 flex-col items-center gap-3 md:shrink">
               <div className="relative">
                 <div className="absolute inset-0 -m-1 rounded-full bg-gradient-to-br from-[color:var(--gold)] via-transparent to-[color:var(--gold-deep)] opacity-0 blur-md transition group-hover:opacity-100" />
                 <div className="relative h-20 w-20 overflow-hidden rounded-full border border-[color:var(--gold)] shadow-soft transition group-hover:scale-105">
@@ -199,7 +199,7 @@ function CategoriesCircles() {
                 </div>
               </div>
               <span className="text-center text-xs font-medium text-[color:var(--midnight)]">{c.name}</span>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -238,12 +238,12 @@ function HeroCarousel() {
                 {SLIDES[i].desc}
               </p>
               <div className="mt-8 flex gap-3">
-                <a href="#" className="inline-flex items-center gap-2 bg-[color:var(--gold)] px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--ivory)]">
+                <Link to="/login" className="inline-flex items-center gap-2 bg-[color:var(--gold)] px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--ivory)]">
                   {SLIDES[i].cta}
-                </a>
-                <a href="#" className="inline-flex items-center gap-2 border border-[color:var(--ivory)]/30 px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--ivory)] transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]">
+                </Link>
+                <Link to="/cadastro" className="inline-flex items-center gap-2 border border-[color:var(--ivory)]/30 px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--ivory)] transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]">
                   Saber mais
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -287,7 +287,7 @@ function MostAccessed() {
         <SectionTitle kicker="Curadoria" title="Benefícios mais acessados" action="Ver todos" />
         <div className="hide-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
           {TOP_BRANDS.map((b) => (
-            <a key={b.name} href="#" className="luxe-card group flex w-56 shrink-0 flex-col justify-between p-6">
+            <Link key={b.name} to="/login" className="luxe-card group flex w-56 shrink-0 flex-col justify-between p-6">
               <BrandMark name={b.name} />
               <div className="mt-6 border-t border-dashed border-[color:var(--gold)]/40 pt-4 text-center">
                 <div className="text-[0.65rem] uppercase tracking-[0.3em] text-[color:var(--gold-deep)]">{b.desc}</div>
@@ -295,7 +295,7 @@ function MostAccessed() {
                   Acessar <ArrowUpRight className="h-3 w-3" />
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -310,14 +310,14 @@ function QuickCategories() {
         <SectionTitle kicker="Navegue" title="Categorias" action="Ver mais" />
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {QUICK_CATS.map((c) => (
-            <a key={c.label} href="#" className="group flex items-center gap-0 overflow-hidden rounded-sm border border-[color:var(--border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+            <Link key={c.label} to="/categoria/$slug" params={{ slug: slugify(c.label) }} className="group flex items-center gap-0 overflow-hidden rounded-sm border border-[color:var(--border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
               <div className="h-16 w-16 shrink-0 overflow-hidden sm:h-[72px] sm:w-[72px]">
                 <img src={c.img} alt={c.label} className="h-full w-full object-cover transition duration-500 group-hover:scale-110" loading="lazy" />
               </div>
               <div className="flex flex-1 items-center px-4">
                 <div className="font-display text-base text-[color:var(--midnight)] sm:text-lg">{c.label}</div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -363,9 +363,9 @@ function FlashOffers() {
                 Corra e aproveite uma seleção privê das melhores maisons com condições reservadas
                 exclusivamente aos membros da corte.
               </p>
-              <a href="#" className="mt-8 inline-flex items-center gap-2 bg-[color:var(--gold)] px-8 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--ivory)]">
+              <Link to="/ofertas-relampago" className="mt-8 inline-flex items-center gap-2 bg-[color:var(--gold)] px-8 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--ivory)]">
                 Aproveitar agora <ArrowUpRight className="h-3.5 w-3.5" />
-              </a>
+              </Link>
             </div>
             <div className="flex items-center justify-around md:justify-end md:gap-6">
               {cell(t.d, "Dias")}<span className="font-display text-3xl text-[color:var(--gold)]/40">:</span>
@@ -387,7 +387,7 @@ function Recent() {
         <SectionTitle kicker="Recém-chegados" title="Benefícios mais recentes" action="Ver todos" />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {RECENT.map((r) => (
-            <a key={r.brand} href="#" className="luxe-card group flex flex-col p-7">
+            <Link key={r.brand} to="/login" className="luxe-card group flex flex-col p-7">
               <span className="inline-flex w-fit items-center gap-1 bg-[color:var(--midnight)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--gold)]">
                 Novo
               </span>
@@ -397,7 +397,7 @@ function Recent() {
               <div className="mt-6 border-t border-dashed border-[color:var(--gold)]/40 pt-4 text-[0.7rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">
                 {r.tag}
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -410,7 +410,7 @@ function FeaturedBanners() {
     <section className="pb-20">
       <div className="mx-auto grid max-w-7xl gap-6 px-6 md:grid-cols-3">
         {FEATURED.map((f) => (
-          <a key={f.title} href="#" className="group relative aspect-[5/3] overflow-hidden border border-[color:var(--gold)]/30 shadow-soft">
+          <Link key={f.title} to="/destaque/$slug" params={{ slug: slugify(f.title) }} className="group relative aspect-[5/3] overflow-hidden border border-[color:var(--gold)]/30 shadow-soft">
             <img src={f.img} alt={f.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" />
             <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--midnight)] via-[color:var(--midnight)]/40 to-transparent" />
             <div className="absolute inset-0 flex flex-col justify-end p-8 text-[color:var(--ivory)]">
@@ -421,7 +421,7 @@ function FeaturedBanners() {
                 Eu quero <ArrowUpRight className="h-3 w-3 transition group-hover:translate-x-1" />
               </span>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </section>
@@ -435,7 +435,7 @@ function Moments() {
         <SectionTitle kicker="Ritual" title="Para momentos especiais" action="Ver tudo" />
         <div className="hide-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
           {MOMENTS.map((m) => (
-            <a key={m.label} href="#" className="luxe-card group flex w-60 shrink-0 flex-col items-center p-7">
+            <Link key={m.label} to="/momento/$slug" params={{ slug: slugify(m.label) }} className="luxe-card group flex w-60 shrink-0 flex-col items-center p-7">
               <div className="relative grid h-24 w-24 place-items-center rounded-full bg-[color:var(--midnight)]">
                 <div className="absolute inset-0 rounded-full border border-dashed border-[color:var(--gold)]/40" />
                 <Crown className="h-9 w-9 text-[color:var(--gold)]" strokeWidth={1.3} />
@@ -444,7 +444,7 @@ function Moments() {
               <div className="mt-3 inline-flex items-center bg-[color:var(--midnight)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--gold)]">
                 + {m.tag}
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>
@@ -486,7 +486,7 @@ function AllBenefits() {
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((b) => (
-            <a key={b.name} href="#" className="luxe-card group flex flex-col p-6">
+            <Link key={b.name} to="/login" className="luxe-card group flex flex-col p-6">
               <BrandMark name={b.name} />
               <h4 className="mt-2 font-display text-lg text-[color:var(--midnight)]">{b.name}</h4>
               <p className="text-xs text-[color:var(--muted-foreground)]">{b.desc}</p>
@@ -496,13 +496,13 @@ function AllBenefits() {
                 </span>
                 <span className="text-[0.65rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">{b.cat}</span>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
         <div className="mt-12 text-center">
-          <a href="#" className="inline-flex items-center gap-2 border border-[color:var(--midnight)] px-10 py-4 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--midnight)] hover:text-[color:var(--gold)]">
+          <Link to="/login" className="inline-flex items-center gap-2 border border-[color:var(--midnight)] px-10 py-4 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--midnight)] hover:text-[color:var(--gold)]">
             Ver mais benefícios
-          </a>
+          </Link>
         </div>
       </div>
     </section>
