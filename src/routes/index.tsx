@@ -31,6 +31,19 @@ import catIconFarmacia from "@/assets/cat-icon-farmacia.jpg";
 import catIconSustentabilidade from "@/assets/cat-icon-sustentabilidade.jpg";
 import catIconDelivery from "@/assets/cat-icon-delivery.jpg";
 import catIconEletro from "@/assets/cat-icon-eletro.jpg";
+import catModa from "@/assets/cat-moda.jpg";
+import catSupermercado from "@/assets/cat-supermercado.jpg";
+import catTecnologia from "@/assets/cat-tecnologia.jpg";
+import catCasaDec from "@/assets/cat-casa-decoracao.jpg";
+import catViagens from "@/assets/cat-viagens.jpg";
+import catBeleza from "@/assets/cat-beleza.jpg";
+import catPetShop from "@/assets/cat-petshop.jpg";
+import catEducacao from "@/assets/cat-educacao.jpg";
+import catTelecom from "@/assets/cat-telecom.jpg";
+import catFinanceiro from "@/assets/cat-financeiro.jpg";
+import catAutomotivo from "@/assets/cat-automotivo.jpg";
+import catInfantil from "@/assets/cat-infantil.jpg";
+import catGames from "@/assets/cat-games.jpg";
 import banner1 from "@/assets/banner-1.jpg";
 import banner2 from "@/assets/banner-2.jpg";
 import banner3 from "@/assets/banner-3.jpg";
@@ -118,6 +131,23 @@ const QUICK_CATS = [
   { label: "Sustentabilidade", hint: "Marcas verdes", img: catIconSustentabilidade },
   { label: "Delivery", hint: "Em casa", img: catIconDelivery },
   { label: "Eletro", hint: "Para o lar", img: catIconEletro },
+];
+
+const ROYALLE_CATS = [
+  { label: "Moda", hint: "Estilo premium", img: catModa },
+  { label: "Farmácia e Saúde", hint: "Bem-estar", img: catIconFarmacia },
+  { label: "Supermercado", hint: "Compra inteligente", img: catSupermercado },
+  { label: "Tecnologia", hint: "Royalle Tech", img: catTecnologia },
+  { label: "Casa e Decoração", hint: "Lar premium", img: catCasaDec },
+  { label: "Viagens", hint: "Royalle Travel", img: catViagens },
+  { label: "Beleza", hint: "Royalle Glow", img: catBeleza },
+  { label: "Pet Shop", hint: "Royalle Pet", img: catPetShop },
+  { label: "Educação", hint: "Royalle Learn", img: catEducacao },
+  { label: "Telecom", hint: "Conectividade", img: catTelecom },
+  { label: "Financeiro", hint: "Royalle Finance", img: catFinanceiro },
+  { label: "Automotivo", hint: "Royalle Drive", img: catAutomotivo },
+  { label: "Infantil", hint: "Royalle Kids", img: catInfantil },
+  { label: "Games e Entretenimento", hint: "Royalle Play", img: catGames },
 ];
 
 const RECENT = [
@@ -316,6 +346,35 @@ function QuickCategories() {
               </div>
               <div className="flex flex-1 items-center px-4">
                 <div className="font-display text-base text-[color:var(--midnight)] sm:text-lg">{c.label}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RoyalleCategoriesGrid() {
+  return (
+    <section className="bg-[color:var(--ivory)] py-20">
+      <div className="mx-auto max-w-7xl px-6">
+        <SectionTitle kicker="Estrutura Royalle" title="Todas as categorias do clube" action="Ver tudo" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
+          {ROYALLE_CATS.map((c) => (
+            <Link
+              key={c.label}
+              to="/categoria/$slug"
+              params={{ slug: slugify(c.label) }}
+              className="group flex flex-col overflow-hidden rounded-sm border border-[color:var(--border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+            >
+              <div className="relative aspect-square overflow-hidden">
+                <img src={c.img} alt={c.label} className="h-full w-full object-cover transition duration-500 group-hover:scale-110" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--midnight)]/60 via-transparent to-transparent" />
+              </div>
+              <div className="flex flex-1 flex-col items-center justify-center gap-1 px-3 py-4 text-center">
+                <div className="font-display text-sm leading-tight text-[color:var(--midnight)] sm:text-base">{c.label}</div>
+                <div className="text-[0.6rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">{c.hint}</div>
               </div>
             </Link>
           ))}
@@ -574,6 +633,7 @@ function RoyalleHome() {
       <HeroCarousel />
       <MostAccessed />
       <QuickCategories />
+      <RoyalleCategoriesGrid />
       <FlashOffers />
       <Recent />
       <FeaturedBanners />

@@ -20,6 +20,19 @@ import catIconFarmacia from "@/assets/cat-icon-farmacia.jpg";
 import catIconSustentabilidade from "@/assets/cat-icon-sustentabilidade.jpg";
 import catIconDelivery from "@/assets/cat-icon-delivery.jpg";
 import catIconEletro from "@/assets/cat-icon-eletro.jpg";
+import catModa from "@/assets/cat-moda.jpg";
+import catSupermercado from "@/assets/cat-supermercado.jpg";
+import catTecnologia from "@/assets/cat-tecnologia.jpg";
+import catCasaDec from "@/assets/cat-casa-decoracao.jpg";
+import catViagens from "@/assets/cat-viagens.jpg";
+import catBeleza from "@/assets/cat-beleza.jpg";
+import catPetShop from "@/assets/cat-petshop.jpg";
+import catEducacao from "@/assets/cat-educacao.jpg";
+import catTelecom from "@/assets/cat-telecom.jpg";
+import catFinanceiro from "@/assets/cat-financeiro.jpg";
+import catAutomotivo from "@/assets/cat-automotivo.jpg";
+import catInfantil from "@/assets/cat-infantil.jpg";
+import catGames from "@/assets/cat-games.jpg";
 
 type Cat = { name: string; img: string; eyebrow: string; desc: string; items: { brand: string; desc: string; city: string; tag: string }[] };
 
@@ -144,6 +157,118 @@ const CATEGORIES: Record<string, Cat> = {
     { brand: "Brastemp Royale", desc: "Cashback 2%", city: "Online", tag: "2%" },
     { brand: "Consul Plus", desc: "Frete grátis", city: "Online", tag: "Frete" },
     { brand: "KitchenAid Lab", desc: "10% para membros", city: "Online", tag: "10% off" },
+  ]},
+  "moda": { name: "Moda", img: catModa, eyebrow: "Royalle Style", desc: "As maisons mais desejadas em moda feminina, masculina e infantil com condições exclusivas.", items: [
+    { brand: "Renner Club", desc: "15% para membros", city: "Brasil", tag: "15% off" },
+    { brand: "Riachuelo Plus", desc: "Cashback 4%", city: "Brasil", tag: "4%" },
+    { brand: "Zattini Boutique", desc: "Frete grátis Royalle", city: "Online", tag: "Frete" },
+    { brand: "Dafiti Premium", desc: "Cupom de R$50", city: "Online", tag: "R$50" },
+    { brand: "Farm Rio", desc: "10% em coleção", city: "Rio de Janeiro", tag: "10% off" },
+    { brand: "Reserva Mini", desc: "20% para membros", city: "Brasil", tag: "20% off" },
+  ]},
+  "farmacia-e-saude": { name: "Farmácia e Saúde", img: catIconFarmacia, eyebrow: "Bem-estar", desc: "Medicamentos, perfumaria, suplementos e planos de saúde com vantagens reais.", items: [
+    { brand: "Drogaria Royale", desc: "Até 30% em genéricos", city: "Brasil", tag: "30% off" },
+    { brand: "Pague Menos Plus", desc: "Cashback 4%", city: "Brasil", tag: "4%" },
+    { brand: "Raia Premium", desc: "Frete grátis", city: "Online", tag: "Frete" },
+    { brand: "Drogasil Club", desc: "15% em perfumaria", city: "Brasil", tag: "15% off" },
+    { brand: "Hapvida Saúde", desc: "Mensalidade com bolsa", city: "Brasil", tag: "Bolsa" },
+    { brand: "Vitamine-se", desc: "10% em suplementos", city: "Online", tag: "10% off" },
+  ]},
+  "supermercado": { name: "Supermercado", img: catSupermercado, eyebrow: "Compra inteligente", desc: "Cashback e descontos nas maiores redes de supermercado do país.", items: [
+    { brand: "Pão de Açúcar Mais", desc: "Cashback 3%", city: "Brasil", tag: "3%" },
+    { brand: "Carrefour Club", desc: "5% em hortifruti", city: "Brasil", tag: "5% off" },
+    { brand: "Extra Premium", desc: "Cupom de R$30", city: "Brasil", tag: "R$30" },
+    { brand: "Assaí Atacadista", desc: "Frete grátis acima R$200", city: "Brasil", tag: "Frete" },
+    { brand: "Sam's Club Royale", desc: "Anuidade com 20%", city: "Brasil", tag: "20% off" },
+    { brand: "Mambo Delivery", desc: "10% para membros", city: "São Paulo", tag: "10% off" },
+  ]},
+  "tecnologia": { name: "Tecnologia", img: catTecnologia, eyebrow: "Royalle Tech", desc: "Smartphones, notebooks, gadgets e acessórios das melhores marcas globais.", items: [
+    { brand: "Apple Authorized", desc: "Parcelamento sem juros", city: "Brasil", tag: "Parcelado" },
+    { brand: "Samsung Members", desc: "Cashback 5%", city: "Online", tag: "5%" },
+    { brand: "Dell Premier", desc: "Até 15% em notebooks", city: "Online", tag: "15% off" },
+    { brand: "Kabum Plus", desc: "Cupom de R$200", city: "Online", tag: "R$200" },
+    { brand: "Logitech Pro", desc: "10% em acessórios", city: "Online", tag: "10% off" },
+    { brand: "Ponto Fino", desc: "2,5% cashback", city: "Online", tag: "2,5%" },
+  ]},
+  "casa-e-decoracao": { name: "Casa e Decoração", img: catCasaDec, eyebrow: "Lar premium", desc: "Móveis de design, decoração e tudo para transformar a sua casa em refúgio.", items: [
+    { brand: "Tok&Stok Royale", desc: "Cashback 4%", city: "Online", tag: "4%" },
+    { brand: "Westwing Home", desc: "Frete grátis Royalle", city: "Online", tag: "Frete" },
+    { brand: "Etna Decora", desc: "15% de desconto", city: "Brasil", tag: "15% off" },
+    { brand: "Camicado Plus", desc: "10% em utilidades", city: "Brasil", tag: "10% off" },
+    { brand: "Leroy Merlin", desc: "Cupom de R$100", city: "Brasil", tag: "R$100" },
+    { brand: "Oppa Design", desc: "20% em coleção", city: "Online", tag: "20% off" },
+  ]},
+  "viagens": { name: "Viagens", img: catViagens, eyebrow: "Royalle Travel", desc: "Passagens, hotéis, pacotes, cruzeiros e locação de veículos com cashback.", items: [
+    { brand: "Decolar Premium", desc: "Cashback 5% em hotéis", city: "Online", tag: "5%" },
+    { brand: "CVC Boutique", desc: "Até 12% em pacotes", city: "Brasil", tag: "12% off" },
+    { brand: "Latam Pass", desc: "Pontos em dobro", city: "Brasil", tag: "2x pontos" },
+    { brand: "Booking Royale", desc: "Cashback 4%", city: "Online", tag: "4%" },
+    { brand: "Localiza Plus", desc: "20% em diárias", city: "Brasil", tag: "20% off" },
+    { brand: "MSC Cruzeiros", desc: "Cabine upgrade", city: "Santos", tag: "Upgrade" },
+  ]},
+  "beleza": { name: "Beleza", img: catBeleza, eyebrow: "Royalle Glow", desc: "Cosméticos, perfumaria, skincare e serviços de estética premium.", items: [
+    { brand: "Sephora Black", desc: "Cashback 6%", city: "Brasil", tag: "6%" },
+    { brand: "O Boticário Club", desc: "20% para membros", city: "Brasil", tag: "20% off" },
+    { brand: "Natura Verdê", desc: "15% em perfumaria", city: "Brasil", tag: "15% off" },
+    { brand: "Avon Boutique", desc: "Até 40% off", city: "Online", tag: "40% off" },
+    { brand: "MAC Cosmetics", desc: "Brinde Royalle", city: "Brasil", tag: "Brinde" },
+    { brand: "L'Occitane", desc: "Frete grátis", city: "Brasil", tag: "Frete" },
+  ]},
+  "pet-shop": { name: "Pet Shop", img: catPetShop, eyebrow: "Royalle Pet", desc: "Rações premium, acessórios, banho, tosa e planos de saúde para o seu pet.", items: [
+    { brand: "Petlove Royale", desc: "Cashback 6%", city: "Online", tag: "6%" },
+    { brand: "Cobasi Premium", desc: "Frete grátis", city: "Online", tag: "Frete" },
+    { brand: "Petz Plus", desc: "10% em ração", city: "Brasil", tag: "10% off" },
+    { brand: "Beni Pet Store", desc: "15% em acessórios", city: "São Paulo", tag: "15% off" },
+    { brand: "Pet Care Plan", desc: "Mensalidade 20% off", city: "Brasil", tag: "20% off" },
+    { brand: "Banho & Tosa Lux", desc: "Cortesia spa pet", city: "São Paulo", tag: "Cortesia" },
+  ]},
+  "educacao": { name: "Educação", img: catEducacao, eyebrow: "Royalle Learn", desc: "Cursos, idiomas, MBAs, plataformas digitais e mentorias para evoluir.", items: [
+    { brand: "Brasas English", desc: "Até 40% em cursos", city: "Online", tag: "40% off" },
+    { brand: "Alura Premium", desc: "3 meses grátis", city: "Online", tag: "3 meses" },
+    { brand: "FGV Executivo", desc: "MBA com bolsa", city: "Rio de Janeiro", tag: "Bolsa" },
+    { brand: "Coursera Plus", desc: "Anuidade com desconto", city: "Online", tag: "Anuidade" },
+    { brand: "Wise Up", desc: "30% em planos anuais", city: "Brasil", tag: "30% off" },
+    { brand: "Descomplica Vest", desc: "50% no primeiro mês", city: "Online", tag: "50% off" },
+  ]},
+  "telecom": { name: "Telecom", img: catTelecom, eyebrow: "Conectividade", desc: "Planos de celular, internet fixa, fibra óptica e streaming com vantagens.", items: [
+    { brand: "Vivo Valoriza", desc: "Bônus de dados", city: "Brasil", tag: "Bônus" },
+    { brand: "Claro Clube", desc: "30% em planos", city: "Brasil", tag: "30% off" },
+    { brand: "TIM Black", desc: "Streaming incluso", city: "Brasil", tag: "Streaming" },
+    { brand: "Oi Fibra", desc: "Instalação grátis", city: "Brasil", tag: "Grátis" },
+    { brand: "Net Premium", desc: "Combo com 20% off", city: "Brasil", tag: "20% off" },
+    { brand: "Disney+ Royale", desc: "Anuidade com desconto", city: "Online", tag: "Anuidade" },
+  ]},
+  "financeiro": { name: "Financeiro", img: catFinanceiro, eyebrow: "Royalle Finance", desc: "Cartões, investimentos, seguros e serviços bancários com condições exclusivas.", items: [
+    { brand: "Nubank Ultravioleta", desc: "Anuidade isenta", city: "Online", tag: "Isenção" },
+    { brand: "C6 Black", desc: "Pontos em dobro", city: "Online", tag: "2x pontos" },
+    { brand: "XP Investimentos", desc: "Assessoria grátis", city: "Brasil", tag: "Cortesia" },
+    { brand: "Itaú Personnalité", desc: "Cashback em compras", city: "Brasil", tag: "Cashback" },
+    { brand: "Porto Seguro Auto", desc: "10% no primeiro ano", city: "Brasil", tag: "10% off" },
+    { brand: "Rico Investimentos", desc: "Taxa zero", city: "Online", tag: "Taxa zero" },
+  ]},
+  "automotivo": { name: "Automotivo", img: catAutomotivo, eyebrow: "Royalle Drive", desc: "Concessionárias, oficinas, estética automotiva, pneus e acessórios premium.", items: [
+    { brand: "Mercedes-Benz Club", desc: "Revisão com bolsa", city: "Brasil", tag: "Bolsa" },
+    { brand: "BMW Premium", desc: "Test drive privê", city: "Brasil", tag: "VIP" },
+    { brand: "Boss Detail", desc: "15% em estética", city: "Brasília", tag: "15% off" },
+    { brand: "Pirelli Plus", desc: "Cashback 5% em pneus", city: "Brasil", tag: "5%" },
+    { brand: "Bosch Service", desc: "20% em revisão", city: "Brasil", tag: "20% off" },
+    { brand: "Shell Box", desc: "Combustível com cashback", city: "Brasil", tag: "Cashback" },
+  ]},
+  "infantil": { name: "Infantil", img: catInfantil, eyebrow: "Royalle Kids", desc: "Tudo para crianças: roupas, brinquedos, escolas, festas e acessórios.", items: [
+    { brand: "Ri Happy", desc: "15% em brinquedos", city: "Brasil", tag: "15% off" },
+    { brand: "PBKids Plus", desc: "Cashback 4%", city: "Online", tag: "4%" },
+    { brand: "Reserva Mini", desc: "20% em coleção", city: "Brasil", tag: "20% off" },
+    { brand: "Hering Kids", desc: "Frete grátis", city: "Online", tag: "Frete" },
+    { brand: "Pequenos Gênios", desc: "Matrícula com bolsa", city: "Brasil", tag: "Bolsa" },
+    { brand: "Festa & Cia", desc: "10% em decoração", city: "São Paulo", tag: "10% off" },
+  ]},
+  "games-e-entretenimento": { name: "Games e Entretenimento", img: catGames, eyebrow: "Royalle Play", desc: "Consoles, jogos, streaming, eventos e tudo o que move o entretenimento.", items: [
+    { brand: "PlayStation Plus", desc: "Anuidade com desconto", city: "Online", tag: "Anuidade" },
+    { brand: "Xbox Game Pass", desc: "3 meses grátis", city: "Online", tag: "3 meses" },
+    { brand: "Steam Royale", desc: "Cashback 5%", city: "Online", tag: "5%" },
+    { brand: "Nintendo Store", desc: "10% em jogos", city: "Online", tag: "10% off" },
+    { brand: "Sympla Plus", desc: "Cashback em shows", city: "Online", tag: "Cashback" },
+    { brand: "Live Nation", desc: "Pré-venda Royalle", city: "Brasil", tag: "Pré-venda" },
   ]},
 };
 
