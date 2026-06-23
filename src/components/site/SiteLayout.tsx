@@ -37,40 +37,44 @@ export function SiteHeader() {
   }, []);
   return (
     <>
-      <div className="bg-[color:var(--midnight)] text-[color:var(--gold)]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[0.7rem] uppercase tracking-[0.3em]">
+      <div className="gradient-midnight text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-[0.7rem] font-medium uppercase tracking-[0.22em]">
           <span className="hidden sm:inline">✦ Experiências curadas para membros</span>
-          <span className="opacity-80">Convide a corte · ganhe 1 mês Royalle Black</span>
+          <span className="opacity-90">Convide a corte · ganhe 1 mês Royalle Black</span>
           <span className="hidden sm:inline">+55 (11) 4000 · 2026</span>
         </div>
       </div>
-      <header className={`sticky top-0 z-40 border-b border-[color:var(--border)] transition-all ${scrolled ? "bg-[color:var(--ivory)]/95 backdrop-blur shadow-soft" : "bg-[color:var(--ivory)]"}`}>
+      <header className={`sticky top-0 z-40 border-b border-[color:var(--border)] transition-all ${scrolled ? "bg-white/95 backdrop-blur shadow-soft" : "bg-white"}`}>
         <div className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-4">
           <Logo />
           <div className="ml-auto hidden flex-1 max-w-lg lg:block">
             <div className="relative">
               <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--muted-foreground)]" />
-              <input placeholder="O que você procura hoje?" className="h-11 w-full rounded-full border border-[color:var(--border)] bg-white pl-11 pr-32 text-sm outline-none transition focus:border-[color:var(--gold)]" />
-              <button className="absolute right-1 top-1 h-9 rounded-full bg-[color:var(--midnight)] px-4 text-xs uppercase tracking-[0.25em] text-[color:var(--gold)] hover:bg-[color:var(--midnight-2)]">Buscar</button>
+              <input placeholder="O que você procura hoje?" className="h-11 w-full rounded-full border border-[color:var(--border)] bg-[color:var(--muted)] pl-11 pr-28 text-sm outline-none transition focus:border-[color:var(--accent)] focus:bg-white" />
+              <button className="absolute right-1 top-1 h-9 rounded-full bg-[color:var(--accent)] px-5 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow-soft transition hover:brightness-110">Buscar</button>
             </div>
           </div>
           <nav className="hidden items-center gap-7 text-sm xl:flex">
             {NAV.map((n) => (
-              <Link key={n.label} to={n.href} className="relative text-[color:var(--midnight)] transition hover:text-[color:var(--gold-deep)]">{n.label}</Link>
+              <Link key={n.label} to={n.href} className="relative font-medium text-[color:var(--foreground)] transition hover:text-[color:var(--midnight-2)]">{n.label}</Link>
             ))}
           </nav>
-          <Link to="/login" className="hidden items-center gap-2 rounded-full border border-[color:var(--midnight)] px-5 py-2 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--midnight)] hover:text-[color:var(--gold)] md:inline-flex">Entrar</Link>
+          <div className="hidden items-center gap-2 md:flex">
+            <Link to="/login" className="px-3 py-2 text-sm font-medium text-[color:var(--foreground)] transition hover:text-[color:var(--midnight-2)]">Entrar</Link>
+            <Link to="/cadastro" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:brightness-110">Começar</Link>
+          </div>
           <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-full border border-[color:var(--border)] xl:hidden" aria-label="Menu">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
         {open && (
-          <div className="border-t border-[color:var(--border)] bg-[color:var(--ivory)] xl:hidden">
+          <div className="border-t border-[color:var(--border)] bg-white xl:hidden">
             <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-6 py-4">
               {NAV.map((n) => (
                 <Link key={n.label} to={n.href} className="rounded-md px-3 py-3 text-sm hover:bg-[color:var(--muted)]">{n.label}</Link>
               ))}
-              <Link to="/login" className="mt-2 rounded-full bg-[color:var(--midnight)] px-4 py-3 text-center text-xs uppercase tracking-[0.3em] text-[color:var(--gold)]">Entrar</Link>
+              <Link to="/login" className="mt-2 rounded-full border border-[color:var(--border)] px-4 py-3 text-center text-sm font-medium">Entrar</Link>
+              <Link to="/cadastro" className="rounded-full bg-[color:var(--accent)] px-4 py-3 text-center text-sm font-semibold text-white">Começar</Link>
             </nav>
           </div>
         )}
@@ -81,7 +85,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="bg-[color:var(--midnight)] text-[color:var(--ivory)]">
+    <footer className="bg-[color:var(--midnight)] text-white">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
