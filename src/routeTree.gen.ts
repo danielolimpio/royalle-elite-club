@@ -23,6 +23,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminEmpresasRouteImport } from './routes/_authenticated/admin.empresas'
 import { Route as AuthenticatedAdminEmpresasNovaRouteImport } from './routes/_authenticated/admin.empresas.nova'
+import { Route as AuthenticatedAdminEmpresasIdRouteImport } from './routes/_authenticated/admin.empresas.$id'
 
 const OfertasRelampagoRoute = OfertasRelampagoRouteImport.update({
   id: '/ofertas-relampago',
@@ -95,6 +96,12 @@ const AuthenticatedAdminEmpresasNovaRoute =
     path: '/nova',
     getParentRoute: () => AuthenticatedAdminEmpresasRoute,
   } as any)
+const AuthenticatedAdminEmpresasIdRoute =
+  AuthenticatedAdminEmpresasIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminEmpresasRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/momento/$slug': typeof MomentoSlugRoute
   '/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/empresas/$id': typeof AuthenticatedAdminEmpresasIdRoute
   '/admin/empresas/nova': typeof AuthenticatedAdminEmpresasNovaRoute
 }
 export interface FileRoutesByTo {
@@ -123,6 +131,7 @@ export interface FileRoutesByTo {
   '/momento/$slug': typeof MomentoSlugRoute
   '/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/empresas/$id': typeof AuthenticatedAdminEmpresasIdRoute
   '/admin/empresas/nova': typeof AuthenticatedAdminEmpresasNovaRoute
 }
 export interface FileRoutesById {
@@ -140,6 +149,7 @@ export interface FileRoutesById {
   '/momento/$slug': typeof MomentoSlugRoute
   '/_authenticated/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/empresas/$id': typeof AuthenticatedAdminEmpresasIdRoute
   '/_authenticated/admin/empresas/nova': typeof AuthenticatedAdminEmpresasNovaRoute
 }
 export interface FileRouteTypes {
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/momento/$slug'
     | '/admin/empresas'
     | '/admin/'
+    | '/admin/empresas/$id'
     | '/admin/empresas/nova'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/momento/$slug'
     | '/admin/empresas'
     | '/admin'
+    | '/admin/empresas/$id'
     | '/admin/empresas/nova'
   id:
     | '__root__'
@@ -187,6 +199,7 @@ export interface FileRouteTypes {
     | '/momento/$slug'
     | '/_authenticated/admin/empresas'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/empresas/$id'
     | '/_authenticated/admin/empresas/nova'
   fileRoutesById: FileRoutesById
 }
@@ -302,15 +315,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminEmpresasNovaRouteImport
       parentRoute: typeof AuthenticatedAdminEmpresasRoute
     }
+    '/_authenticated/admin/empresas/$id': {
+      id: '/_authenticated/admin/empresas/$id'
+      path: '/$id'
+      fullPath: '/admin/empresas/$id'
+      preLoaderRoute: typeof AuthenticatedAdminEmpresasIdRouteImport
+      parentRoute: typeof AuthenticatedAdminEmpresasRoute
+    }
   }
 }
 
 interface AuthenticatedAdminEmpresasRouteChildren {
+  AuthenticatedAdminEmpresasIdRoute: typeof AuthenticatedAdminEmpresasIdRoute
   AuthenticatedAdminEmpresasNovaRoute: typeof AuthenticatedAdminEmpresasNovaRoute
 }
 
 const AuthenticatedAdminEmpresasRouteChildren: AuthenticatedAdminEmpresasRouteChildren =
   {
+    AuthenticatedAdminEmpresasIdRoute: AuthenticatedAdminEmpresasIdRoute,
     AuthenticatedAdminEmpresasNovaRoute: AuthenticatedAdminEmpresasNovaRoute,
   }
 
