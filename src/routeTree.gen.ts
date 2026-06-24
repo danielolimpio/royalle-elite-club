@@ -12,11 +12,19 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as OfertasRelampagoRouteImport } from './routes/ofertas-relampago'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CadastroRouteImport } from './routes/cadastro'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MomentoSlugRouteImport } from './routes/momento.$slug'
+import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as DestaqueSlugRouteImport } from './routes/destaque.$slug'
 import { Route as CheckoutPlanRouteImport } from './routes/checkout.$plan'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminEmpresasRouteImport } from './routes/_authenticated/admin.empresas'
+import { Route as AuthenticatedAdminEmpresasNovaRouteImport } from './routes/_authenticated/admin.empresas.nova'
+import { Route as AuthenticatedAdminEmpresasIdRouteImport } from './routes/_authenticated/admin.empresas.$id'
 
 const OfertasRelampagoRoute = OfertasRelampagoRouteImport.update({
   id: '/ofertas-relampago',
@@ -33,6 +41,10 @@ const CadastroRoute = CadastroRouteImport.update({
   path: '/cadastro',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -41,6 +53,11 @@ const IndexRoute = IndexRouteImport.update({
 const MomentoSlugRoute = MomentoSlugRouteImport.update({
   id: '/momento/$slug',
   path: '/momento/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpresaSlugRoute = EmpresaSlugRouteImport.update({
+  id: '/empresa/$slug',
+  path: '/empresa/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DestaqueSlugRoute = DestaqueSlugRouteImport.update({
@@ -58,37 +75,91 @@ const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
   path: '/categoria/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminEmpresasRoute =
+  AuthenticatedAdminEmpresasRouteImport.update({
+    id: '/empresas',
+    path: '/empresas',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminEmpresasNovaRoute =
+  AuthenticatedAdminEmpresasNovaRouteImport.update({
+    id: '/nova',
+    path: '/nova',
+    getParentRoute: () => AuthenticatedAdminEmpresasRoute,
+  } as any)
+const AuthenticatedAdminEmpresasIdRoute =
+  AuthenticatedAdminEmpresasIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminEmpresasRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
+  '/empresa/$slug': typeof EmpresaSlugRoute
   '/momento/$slug': typeof MomentoSlugRoute
+  '/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/empresas/$id': typeof AuthenticatedAdminEmpresasIdRoute
+  '/admin/empresas/nova': typeof AuthenticatedAdminEmpresasNovaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
+  '/empresa/$slug': typeof EmpresaSlugRoute
   '/momento/$slug': typeof MomentoSlugRoute
+  '/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/empresas/$id': typeof AuthenticatedAdminEmpresasIdRoute
+  '/admin/empresas/nova': typeof AuthenticatedAdminEmpresasNovaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
+  '/empresa/$slug': typeof EmpresaSlugRoute
   '/momento/$slug': typeof MomentoSlugRoute
+  '/_authenticated/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/empresas/$id': typeof AuthenticatedAdminEmpresasIdRoute
+  '/_authenticated/admin/empresas/nova': typeof AuthenticatedAdminEmpresasNovaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,40 +168,63 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/ofertas-relampago'
+    | '/admin'
+    | '/dashboard'
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
+    | '/empresa/$slug'
     | '/momento/$slug'
+    | '/admin/empresas'
+    | '/admin/'
+    | '/admin/empresas/$id'
+    | '/admin/empresas/nova'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/cadastro'
     | '/login'
     | '/ofertas-relampago'
+    | '/dashboard'
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
+    | '/empresa/$slug'
     | '/momento/$slug'
+    | '/admin/empresas'
+    | '/admin'
+    | '/admin/empresas/$id'
+    | '/admin/empresas/nova'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/cadastro'
     | '/login'
     | '/ofertas-relampago'
+    | '/_authenticated/admin'
+    | '/_authenticated/dashboard'
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
+    | '/empresa/$slug'
     | '/momento/$slug'
+    | '/_authenticated/admin/empresas'
+    | '/_authenticated/admin/'
+    | '/_authenticated/admin/empresas/$id'
+    | '/_authenticated/admin/empresas/nova'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   CadastroRoute: typeof CadastroRoute
   LoginRoute: typeof LoginRoute
   OfertasRelampagoRoute: typeof OfertasRelampagoRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CheckoutPlanRoute: typeof CheckoutPlanRoute
   DestaqueSlugRoute: typeof DestaqueSlugRoute
+  EmpresaSlugRoute: typeof EmpresaSlugRoute
   MomentoSlugRoute: typeof MomentoSlugRoute
 }
 
@@ -157,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CadastroRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -169,6 +270,13 @@ declare module '@tanstack/react-router' {
       path: '/momento/$slug'
       fullPath: '/momento/$slug'
       preLoaderRoute: typeof MomentoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empresa/$slug': {
+      id: '/empresa/$slug'
+      path: '/empresa/$slug'
+      fullPath: '/empresa/$slug'
+      preLoaderRoute: typeof EmpresaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/destaque/$slug': {
@@ -192,29 +300,105 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/empresas': {
+      id: '/_authenticated/admin/empresas'
+      path: '/empresas'
+      fullPath: '/admin/empresas'
+      preLoaderRoute: typeof AuthenticatedAdminEmpresasRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/empresas/nova': {
+      id: '/_authenticated/admin/empresas/nova'
+      path: '/nova'
+      fullPath: '/admin/empresas/nova'
+      preLoaderRoute: typeof AuthenticatedAdminEmpresasNovaRouteImport
+      parentRoute: typeof AuthenticatedAdminEmpresasRoute
+    }
+    '/_authenticated/admin/empresas/$id': {
+      id: '/_authenticated/admin/empresas/$id'
+      path: '/$id'
+      fullPath: '/admin/empresas/$id'
+      preLoaderRoute: typeof AuthenticatedAdminEmpresasIdRouteImport
+      parentRoute: typeof AuthenticatedAdminEmpresasRoute
+    }
   }
 }
 
+interface AuthenticatedAdminEmpresasRouteChildren {
+  AuthenticatedAdminEmpresasIdRoute: typeof AuthenticatedAdminEmpresasIdRoute
+  AuthenticatedAdminEmpresasNovaRoute: typeof AuthenticatedAdminEmpresasNovaRoute
+}
+
+const AuthenticatedAdminEmpresasRouteChildren: AuthenticatedAdminEmpresasRouteChildren =
+  {
+    AuthenticatedAdminEmpresasIdRoute: AuthenticatedAdminEmpresasIdRoute,
+    AuthenticatedAdminEmpresasNovaRoute: AuthenticatedAdminEmpresasNovaRoute,
+  }
+
+const AuthenticatedAdminEmpresasRouteWithChildren =
+  AuthenticatedAdminEmpresasRoute._addFileChildren(
+    AuthenticatedAdminEmpresasRouteChildren,
+  )
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminEmpresasRoute: typeof AuthenticatedAdminEmpresasRouteWithChildren
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminEmpresasRoute: AuthenticatedAdminEmpresasRouteWithChildren,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   CadastroRoute: CadastroRoute,
   LoginRoute: LoginRoute,
   OfertasRelampagoRoute: OfertasRelampagoRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   CheckoutPlanRoute: CheckoutPlanRoute,
   DestaqueSlugRoute: DestaqueSlugRoute,
+  EmpresaSlugRoute: EmpresaSlugRoute,
   MomentoSlugRoute: MomentoSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
