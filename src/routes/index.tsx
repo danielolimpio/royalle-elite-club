@@ -131,23 +131,31 @@ function SectionTitle({ kicker, title, action }: { kicker?: string; title: strin
 
 function CategoriesCircles() {
   return (
-    <section className="bg-[color:var(--ivory)] py-14">
+    <section className="bg-[color:var(--ivory)] py-12">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-6 flex justify-center">
-          <span className="ornament">A Corte Royalle</span>
+        <div className="mb-8 flex items-center justify-between">
+          <span className="ornament">Categorias Royalle</span>
+          <Link to="/dashboard" className="hidden text-[0.65rem] uppercase tracking-[0.3em] text-[color:var(--accent)] md:inline-flex">
+            Ver todas <ArrowUpRight className="ml-1 inline h-3 w-3" />
+          </Link>
         </div>
-        <div className="hide-scrollbar -mx-6 flex gap-6 overflow-x-auto px-6 md:grid md:grid-cols-5 md:overflow-visible lg:grid-cols-10">
-          {CATEGORIES.map((c) => (
-            <Link key={c.name} to="/categoria/$slug" params={{ slug: slugify(c.name) }} className="group flex shrink-0 flex-col items-center gap-3 md:shrink">
-              <div className="relative">
-                <div className="absolute inset-0 -m-1 rounded-full bg-gradient-to-br from-[color:var(--gold)] via-transparent to-[color:var(--gold-deep)] opacity-0 blur-md transition group-hover:opacity-100" />
-                <div className="relative h-20 w-20 overflow-hidden rounded-full border border-[color:var(--gold)] shadow-soft transition group-hover:scale-105">
-                  <img src={c.img} alt={c.name} className="h-full w-full object-cover" loading="lazy" />
+        <div className="hide-scrollbar -mx-6 grid grid-flow-col auto-cols-[120px] gap-4 overflow-x-auto px-6 md:grid-flow-row md:auto-cols-auto md:grid-cols-6 lg:grid-cols-12">
+          {ROYALLE_CATEGORIES.map((c) => {
+            const Icon = c.icon;
+            return (
+              <Link
+                key={c.slug}
+                to="/categoria/$slug"
+                params={{ slug: c.slug }}
+                className="group flex flex-col items-center gap-3"
+              >
+                <div className={`grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br ${c.gradient} text-white shadow-md transition group-hover:-translate-y-1 group-hover:shadow-xl`}>
+                  <Icon className="h-7 w-7" strokeWidth={1.5} />
                 </div>
-              </div>
-              <span className="text-center text-xs font-medium text-[color:var(--midnight)]">{c.name}</span>
-            </Link>
-          ))}
+                <span className="text-center text-[0.72rem] font-medium leading-tight text-[color:var(--midnight)]">{c.name}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -227,75 +235,54 @@ function BrandMark({ name }: { name: string }) {
   );
 }
 
+function CompanyCard({ c, kicker }: { c: any; kicker?: string }) {
+  return (
+    <Link
+      to="/empresa/$slug"
+      params={{ slug: c.slug }}
+      className="luxe-card group flex flex-col gap-3 p-6"
+    >
+      <div className="flex items-center gap-3">
+        {c.logo_url ? (
+          <img src={c.logo_url} alt={c.name} className="h-12 w-12 rounded-lg object-cover" />
+        ) : (
+          <div className="grid h-12 w-12 place-items-center rounded-lg bg-gradient-to-br from-[color:var(--accent)] to-[color:var(--midnight)] text-white font-display text-lg">
+            {c.name?.[0]}
+          </div>
+        )}
+        <div className="min-w-0">
+          <div className="truncate font-display text-base text-[color:var(--midnight)]">{c.name}</div>
+          <div className="text-[0.6rem] uppercase tracking-[0.25em] text-[color:var(--accent)]">
+            {kicker ?? c.categories?.name ?? "Royalle"}
+          </div>
+        </div>
+      </div>
+      <p className="line-clamp-2 text-sm text-[color:var(--muted-foreground)]">
+        {c.short_description ?? "Benefício exclusivo para membros."}
+      </p>
+      <span className="mt-auto inline-flex items-center gap-1 text-xs font-semibold text-[color:var(--accent)]">
+        Acessar <ArrowUpRight className="h-3 w-3" />
+      </span>
+    </Link>
+  );
+}
+
 function MostAccessed() {
+  const fn = useServerFn(getMostAccessedFn);
+  const q = useQuery({ queryKey: ["most-accessed"], queryFn: () => fn() });
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-6">
         <SectionTitle kicker="Curadoria" title="Benefícios mais acessados" action="Ver todos" />
-        <div className="hide-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
-          {TOP_BRANDS.map((b) => (
-            <Link key={b.name} to="/login" className="luxe-card group flex w-56 shrink-0 flex-col justify-between p-6">
-              <BrandMark name={b.name} />
-              <div className="mt-6 border-t border-dashed border-[color:var(--gold)]/40 pt-4 text-center">
-                <div className="text-[0.65rem] uppercase tracking-[0.3em] text-[color:var(--gold-deep)]">{b.desc}</div>
-                <div className="mt-2 inline-flex items-center gap-1 text-xs text-[color:var(--midnight)] opacity-0 transition group-hover:opacity-100">
-                  Acessar <ArrowUpRight className="h-3 w-3" />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function QuickCategories() {
-  return (
-    <section className="bg-[color:var(--muted)] py-20">
-      <div className="mx-auto max-w-7xl px-6">
-        <SectionTitle kicker="Navegue" title="Categorias" action="Ver mais" />
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {QUICK_CATS.map((c) => (
-            <Link key={c.label} to="/categoria/$slug" params={{ slug: slugify(c.label) }} className="group flex items-center gap-0 overflow-hidden rounded-sm border border-[color:var(--border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-              <div className="h-16 w-16 shrink-0 overflow-hidden sm:h-[72px] sm:w-[72px]">
-                <img src={c.img} alt={c.label} className="h-full w-full object-cover transition duration-500 group-hover:scale-110" loading="lazy" />
-              </div>
-              <div className="flex flex-1 items-center px-4">
-                <div className="font-display text-base text-[color:var(--midnight)] sm:text-lg">{c.label}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function RoyalleCategoriesGrid() {
-  return (
-    <section className="bg-[color:var(--ivory)] py-20">
-      <div className="mx-auto max-w-7xl px-6">
-        <SectionTitle kicker="Estrutura Royalle" title="Todas as categorias do clube" action="Ver tudo" />
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
-          {ROYALLE_CATS.map((c) => (
-            <Link
-              key={c.label}
-              to="/categoria/$slug"
-              params={{ slug: slugify(c.label) }}
-              className="group flex flex-col overflow-hidden rounded-sm border border-[color:var(--border)] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-            >
-              <div className="relative aspect-square overflow-hidden">
-                <img src={c.img} alt={c.label} className="h-full w-full object-cover transition duration-500 group-hover:scale-110" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--midnight)]/60 via-transparent to-transparent" />
-              </div>
-              <div className="flex flex-1 flex-col items-center justify-center gap-1 px-3 py-4 text-center">
-                <div className="font-display text-sm leading-tight text-[color:var(--midnight)] sm:text-base">{c.label}</div>
-                <div className="text-[0.6rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">{c.hint}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {!q.data?.length ? (
+          <EmptyHint text="Em breve: as marcas mais acessadas por categoria." />
+        ) : (
+          <div className="hide-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
+            {q.data.map((c: any) => (
+              <div key={c.id} className="w-64 shrink-0"><CompanyCard c={c} /></div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -357,25 +344,19 @@ function FlashOffers() {
 }
 
 function Recent() {
+  const fn = useServerFn(getRecentFn);
+  const q = useQuery({ queryKey: ["recent"], queryFn: () => fn() });
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-6">
         <SectionTitle kicker="Recém-chegados" title="Benefícios mais recentes" action="Ver todos" />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {RECENT.map((r) => (
-            <Link key={r.brand} to="/login" className="luxe-card group flex flex-col p-7">
-              <span className="inline-flex w-fit items-center gap-1 bg-[color:var(--midnight)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--gold)]">
-                Novo
-              </span>
-              <BrandMark name={r.brand} />
-              <h4 className="font-display text-xl text-[color:var(--midnight)]">{r.brand}</h4>
-              <p className="mt-2 line-clamp-2 text-sm text-[color:var(--muted-foreground)]">{r.desc}</p>
-              <div className="mt-6 border-t border-dashed border-[color:var(--gold)]/40 pt-4 text-[0.7rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">
-                {r.tag}
-              </div>
-            </Link>
-          ))}
-        </div>
+        {!q.data?.length ? (
+          <EmptyHint text="Em breve: novidades variadas por categoria." />
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {q.data.map((c: any) => <CompanyCard key={c.id} c={c} kicker="Novo" />)}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -405,78 +386,82 @@ function FeaturedBanners() {
 }
 
 function Moments() {
+  const fn = useServerFn(getSpecialMomentsFn);
+  const q = useQuery({ queryKey: ["moments"], queryFn: () => fn() });
   return (
     <section className="bg-[color:var(--muted)] py-20">
       <div className="mx-auto max-w-7xl px-6">
         <SectionTitle kicker="Ritual" title="Para momentos especiais" action="Ver tudo" />
-        <div className="hide-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
-          {MOMENTS.map((m) => (
-            <Link key={m.label} to="/momento/$slug" params={{ slug: slugify(m.label) }} className="luxe-card group flex w-60 shrink-0 flex-col items-center p-7">
-              <div className="relative grid h-24 w-24 place-items-center rounded-full bg-[color:var(--midnight)]">
-                <div className="absolute inset-0 rounded-full border border-dashed border-[color:var(--gold)]/40" />
-                <Crown className="h-9 w-9 text-[color:var(--gold)]" strokeWidth={1.3} />
-              </div>
-              <div className="mt-5 text-center font-display text-lg text-[color:var(--midnight)]">{m.label}</div>
-              <div className="mt-3 inline-flex items-center bg-[color:var(--midnight)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--gold)]">
-                + {m.tag}
-              </div>
-            </Link>
-          ))}
-        </div>
+        {!q.data?.length ? (
+          <EmptyHint text="Marque empresas como destaque no admin para aparecerem aqui." />
+        ) : (
+          <div className="hide-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
+            {q.data.map((c: any) => (
+              <div key={c.id} className="w-64 shrink-0"><CompanyCard c={c} kicker="Destaque" /></div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function AllBenefits() {
-  const [cat, setCat] = useState(FILTER_CATS[0]);
-  const [city, setCity] = useState(CITIES[0]);
-  const filtered = ALL_BENEFITS.filter(
-    (b) => (cat === FILTER_CATS[0] || b.cat === cat) && (city === CITIES[0] || b.city === city),
+function EmptyHint({ text }: { text: string }) {
+  return (
+    <div className="rounded-2xl border border-dashed border-[color:var(--border)] bg-white p-10 text-center text-sm text-[color:var(--muted-foreground)]">
+      {text}
+    </div>
   );
+}
+
+function AllBenefits() {
+  const [cat, setCat] = useState<string>("");
+  const [city, setCity] = useState<string>("");
+  const fn = useServerFn(listCompaniesFn);
+  const q = useQuery({
+    queryKey: ["all-benefits", cat, city],
+    queryFn: () => fn({ data: { categorySlug: cat || undefined, city: city || undefined, limit: 60, orderBy: "created_at" } }),
+  });
+  const cities = Array.from(new Set((q.data ?? []).map((c: any) => c.city).filter(Boolean))) as string[];
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-6">
         <SectionTitle kicker="Catálogo" title="Todos os benefícios" />
         <div className="mb-10 flex flex-wrap items-center gap-3">
-          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[color:var(--gold-deep)]">
+          <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-[color:var(--accent)]">
             <Filter className="h-3.5 w-3.5" /> Filtrar
           </div>
           <select
             value={cat}
             onChange={(e) => setCat(e.target.value)}
-            className="h-11 rounded-full border border-[color:var(--border)] bg-white px-5 text-sm outline-none focus:border-[color:var(--gold)]"
+            className="h-11 rounded-full border border-[color:var(--border)] bg-white px-5 text-sm outline-none focus:border-[color:var(--accent)]"
           >
-            {FILTER_CATS.map((c) => <option key={c}>{c}</option>)}
+            <option value="">Todas as categorias</option>
+            {ROYALLE_CATEGORIES.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
           </select>
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className="h-11 rounded-full border border-[color:var(--border)] bg-white px-5 text-sm outline-none focus:border-[color:var(--gold)]"
+            className="h-11 rounded-full border border-[color:var(--border)] bg-white px-5 text-sm outline-none focus:border-[color:var(--accent)]"
           >
-            {CITIES.map((c) => <option key={c}>{c}</option>)}
+            <option value="">Todas as cidades</option>
+            {cities.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
           <span className="ml-auto text-xs uppercase tracking-[0.3em] text-[color:var(--muted-foreground)]">
-            {filtered.length} resultados
+            {q.data?.length ?? 0} resultados
           </span>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filtered.map((b) => (
-            <Link key={b.name} to="/login" className="luxe-card group flex flex-col p-6">
-              <BrandMark name={b.name} />
-              <h4 className="mt-2 font-display text-lg text-[color:var(--midnight)]">{b.name}</h4>
-              <p className="text-xs text-[color:var(--muted-foreground)]">{b.desc}</p>
-              <div className="mt-4 flex items-center justify-between border-t border-dashed border-[color:var(--gold)]/40 pt-3">
-                <span className="inline-flex items-center gap-1 text-[0.65rem] uppercase tracking-[0.25em] text-[color:var(--muted-foreground)]">
-                  <MapPin className="h-3 w-3" /> {b.city}
-                </span>
-                <span className="text-[0.65rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">{b.cat}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {!q.data?.length ? (
+          <EmptyHint text="Nenhum benefício encontrado com esses filtros." />
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {q.data.map((c: any) => (
+              <CompanyCard key={c.id} c={c} />
+            ))}
+          </div>
+        )}
         <div className="mt-12 text-center">
-          <Link to="/login" className="inline-flex items-center gap-2 border border-[color:var(--midnight)] px-10 py-4 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--midnight)] hover:text-[color:var(--gold)]">
+          <Link to="/dashboard" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-10 py-4 text-xs uppercase tracking-[0.3em] text-white transition hover:brightness-110">
             Ver mais benefícios
           </Link>
         </div>
@@ -549,8 +534,6 @@ function RoyalleHome() {
       <CategoriesCircles />
       <HeroCarousel />
       <MostAccessed />
-      <QuickCategories />
-      <RoyalleCategoriesGrid />
       <FlashOffers />
       <Recent />
       <FeaturedBanners />
