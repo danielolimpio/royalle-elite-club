@@ -18,6 +18,7 @@ import { Route as MomentoSlugRouteImport } from './routes/momento.$slug'
 import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as DestaqueSlugRouteImport } from './routes/destaque.$slug'
 import { Route as CheckoutPlanRouteImport } from './routes/checkout.$plan'
+import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
@@ -69,6 +70,11 @@ const CheckoutPlanRoute = CheckoutPlanRouteImport.update({
   path: '/checkout/$plan',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
+  id: '/categoria/$slug',
+  path: '/categoria/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/ofertas-relampago': typeof OfertasRelampagoRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/ofertas-relampago': typeof OfertasRelampagoRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/ofertas-relampago'
     | '/admin'
     | '/dashboard'
+    | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
     | '/empresa/$slug'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/ofertas-relampago'
     | '/dashboard'
+    | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
     | '/empresa/$slug'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/ofertas-relampago'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
+    | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
     | '/empresa/$slug'
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   CadastroRoute: typeof CadastroRoute
   LoginRoute: typeof LoginRoute
   OfertasRelampagoRoute: typeof OfertasRelampagoRoute
+  CategoriaSlugRoute: typeof CategoriaSlugRoute
   CheckoutPlanRoute: typeof CheckoutPlanRoute
   DestaqueSlugRoute: typeof DestaqueSlugRoute
   EmpresaSlugRoute: typeof EmpresaSlugRoute
@@ -278,6 +291,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout/$plan'
       fullPath: '/checkout/$plan'
       preLoaderRoute: typeof CheckoutPlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categoria/$slug': {
+      id: '/categoria/$slug'
+      path: '/categoria/$slug'
+      fullPath: '/categoria/$slug'
+      preLoaderRoute: typeof CategoriaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -373,6 +393,7 @@ const rootRouteChildren: RootRouteChildren = {
   CadastroRoute: CadastroRoute,
   LoginRoute: LoginRoute,
   OfertasRelampagoRoute: OfertasRelampagoRoute,
+  CategoriaSlugRoute: CategoriaSlugRoute,
   CheckoutPlanRoute: CheckoutPlanRoute,
   DestaqueSlugRoute: DestaqueSlugRoute,
   EmpresaSlugRoute: EmpresaSlugRoute,

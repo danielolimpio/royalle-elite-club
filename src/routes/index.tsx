@@ -11,39 +11,12 @@ import {
 } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteLayout";
 import { slugify } from "@/lib/slug";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { CATEGORIES as ROYALLE_CATEGORIES } from "@/lib/categories";
+import { getMostAccessedFn, getRecentFn, getSpecialMomentsFn, listCompaniesFn } from "@/lib/companies.functions";
 
 import hero from "@/assets/hero-royalle.jpg";
-import catEstrada from "@/assets/cat-estrada.jpg";
-import catCupom from "@/assets/cat-cupom.jpg";
-import catCarreira from "@/assets/cat-carreira.jpg";
-import catAuto from "@/assets/cat-autocuidado.jpg";
-import catDivertir from "@/assets/cat-divertir.jpg";
-import catSextou from "@/assets/cat-sextou.jpg";
-import catComer from "@/assets/cat-comer.jpg";
-import catLar from "@/assets/cat-lar.jpg";
-import catPet from "@/assets/cat-pet.jpg";
-import catAchadinhos from "@/assets/cat-achadinhos.jpg";
-import catIconCashback from "@/assets/cat-icon-cashback.jpg";
-import catIconNovidades from "@/assets/cat-icon-novidades.jpg";
-import catIconGratuitos from "@/assets/cat-icon-gratuitos.jpg";
-import catIconCinema from "@/assets/cat-icon-cinema.jpg";
-import catIconFarmacia from "@/assets/cat-icon-farmacia.jpg";
-import catIconSustentabilidade from "@/assets/cat-icon-sustentabilidade.jpg";
-import catIconDelivery from "@/assets/cat-icon-delivery.jpg";
-import catIconEletro from "@/assets/cat-icon-eletro.jpg";
-import catModa from "@/assets/cat-moda.jpg";
-import catSupermercado from "@/assets/cat-supermercado.jpg";
-import catTecnologia from "@/assets/cat-tecnologia.jpg";
-import catCasaDec from "@/assets/cat-casa-decoracao.jpg";
-import catViagens from "@/assets/cat-viagens.jpg";
-import catBeleza from "@/assets/cat-beleza.jpg";
-import catPetShop from "@/assets/cat-petshop.jpg";
-import catEducacao from "@/assets/cat-educacao.jpg";
-import catTelecom from "@/assets/cat-telecom.jpg";
-import catFinanceiro from "@/assets/cat-financeiro.jpg";
-import catAutomotivo from "@/assets/cat-automotivo.jpg";
-import catInfantil from "@/assets/cat-infantil.jpg";
-import catGames from "@/assets/cat-games.jpg";
 import banner1 from "@/assets/banner-1.jpg";
 import banner2 from "@/assets/banner-2.jpg";
 import banner3 from "@/assets/banner-3.jpg";
@@ -75,18 +48,7 @@ export const Route = createFileRoute("/")({
   component: RoyalleHome,
 });
 
-const CATEGORIES = [
-  { name: "Pé na estrada", img: catEstrada },
-  { name: "Fome de cupom", img: catCupom },
-  { name: "Foco na carreira", img: catCarreira },
-  { name: "Autocuidado", img: catAuto },
-  { name: "Para se divertir", img: catDivertir },
-  { name: "Sextou", img: catSextou },
-  { name: "Comer bem", img: catComer },
-  { name: "Lar doce lar", img: catLar },
-  { name: "Cuidados pet", img: catPet },
-  { name: "Achadinhos", img: catAchadinhos },
-];
+// Categorias oficiais Royalle (12) vêm de `@/lib/categories`
 
 const SLIDES = [
   {
@@ -110,51 +72,6 @@ const SLIDES = [
     desc: "Experiências cuidadosamente curadas para você relaxar com a tranquilidade de quem é membro.",
     cta: "Cuidar de mim",
   },
-];
-
-const TOP_BRANDS = [
-  { name: "Maison Aurea", desc: "Até 30% de desconto" },
-  { name: "Domaine Royal", desc: "Até 45% de desconto" },
-  { name: "Atelier Noir", desc: "Até 25% de desconto" },
-  { name: "Privé Voyages", desc: "Cashback 8%" },
-  { name: "Casa di Lusso", desc: "Até 40% de desconto" },
-  { name: "L'Or Boutique", desc: "Até 35% de desconto" },
-  { name: "Édition Privée", desc: "Cashback 12%" },
-];
-
-const QUICK_CATS = [
-  { label: "Cashback", hint: "Receba de volta", img: catIconCashback },
-  { label: "Novidades", hint: "Recém-chegados", img: catIconNovidades },
-  { label: "Gratuitos", hint: "Sem custo", img: catIconGratuitos },
-  { label: "Cinema", hint: "Sessões privê", img: catIconCinema },
-  { label: "Farmácia", hint: "Saúde sempre", img: catIconFarmacia },
-  { label: "Sustentabilidade", hint: "Marcas verdes", img: catIconSustentabilidade },
-  { label: "Delivery", hint: "Em casa", img: catIconDelivery },
-  { label: "Eletro", hint: "Para o lar", img: catIconEletro },
-];
-
-const ROYALLE_CATS = [
-  { label: "Moda", hint: "Estilo premium", img: catModa },
-  { label: "Farmácia e Saúde", hint: "Bem-estar", img: catIconFarmacia },
-  { label: "Supermercado", hint: "Compra inteligente", img: catSupermercado },
-  { label: "Tecnologia", hint: "Royalle Tech", img: catTecnologia },
-  { label: "Casa e Decoração", hint: "Lar premium", img: catCasaDec },
-  { label: "Viagens", hint: "Royalle Travel", img: catViagens },
-  { label: "Beleza", hint: "Royalle Glow", img: catBeleza },
-  { label: "Pet Shop", hint: "Royalle Pet", img: catPetShop },
-  { label: "Educação", hint: "Royalle Learn", img: catEducacao },
-  { label: "Telecom", hint: "Conectividade", img: catTelecom },
-  { label: "Financeiro", hint: "Royalle Finance", img: catFinanceiro },
-  { label: "Automotivo", hint: "Royalle Drive", img: catAutomotivo },
-  { label: "Infantil", hint: "Royalle Kids", img: catInfantil },
-  { label: "Games e Entretenimento", hint: "Royalle Play", img: catGames },
-];
-
-const RECENT = [
-  { brand: "Sabrina Pratas", desc: "Acessórios de prata artesanal", tag: "15% de desconto" },
-  { brand: "Royal Cruzeiros", desc: "Agência de viagens premium", tag: "5% de desconto" },
-  { brand: "Ponto Fino", desc: "Smartphones, TVs e eletrodomésticos", tag: "2,5% de cashback" },
-  { brand: "Compra Certa", desc: "Brastemp, Consul e KitchenAid", tag: "2% de cashback" },
 ];
 
 const FEATURED = [
