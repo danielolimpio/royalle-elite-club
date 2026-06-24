@@ -2,6 +2,8 @@ import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-r
 import { useState } from "react";
 import { Crown, Mail, Lock, ArrowRight } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteLayout";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (s: Record<string, unknown>) => ({ from: typeof s.from === "string" ? s.from : undefined }),
@@ -14,6 +16,15 @@ function LoginPage() {
   const { from } = useSearch({ from: "/login" });
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
+  const [loading, setLoading] = useState(false);
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pwd });
+    setLoading(false);
+    if (error) { toast.error(error.message); return; }
+    navigate({ to: from === "admin" ? "/admin" : "/dashboard" });
+  }
   return (
     <SiteShell>
       <section className="relative overflow-hidden bg-[color:var(--midnight)] py-20 text-[color:var(--ivory)]">
@@ -30,10 +41,7 @@ function LoginPage() {
             </div>
           </div>
           <div className="rounded-sm border border-[color:var(--gold)]/30 bg-[color:var(--ivory)] p-10 shadow-luxe">
-            <form
-              onSubmit={(e) => { e.preventDefault(); navigate({ to: "/" }); }}
-              className="space-y-5 text-[color:var(--midnight)]"
-            >
+            <form onSubmit={submit} className="space-y-5 text-[color:var(--midnight)]">
               <div>
                 <label className="text-[0.65rem] uppercase tracking-[0.3em] text-[color:var(--gold-deep)]">E-mail</label>
                 <div className="relative mt-2">
@@ -54,8 +62,8 @@ function LoginPage() {
                 </label>
                 <a href="#" className="uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">Esqueci minha senha</a>
               </div>
-              <button type="submit" className="inline-flex h-12 w-full items-center justify-center gap-2 bg-[color:var(--midnight)] text-xs uppercase tracking-[0.3em] text-[color:var(--gold)] transition hover:bg-[color:var(--midnight-2)]">
-                Entrar <ArrowRight className="h-4 w-4" />
+              <button type="submit" disabled={loading} className="inline-flex h-12 w-full items-center justify-center gap-2 bg-[color:var(--midnight)] text-xs uppercase tracking-[0.3em] text-[color:var(--gold)] transition hover:bg-[color:var(--midnight-2)] disabled:opacity-60">
+                {loading ? "Entrando…" : "Entrar"} <ArrowRight className="h-4 w-4" />
               </button>
               <div className="text-center text-sm text-[color:var(--muted-foreground)]">
                 Ainda não é membro?{" "}
