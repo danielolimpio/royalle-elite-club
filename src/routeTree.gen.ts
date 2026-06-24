@@ -12,11 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as OfertasRelampagoRouteImport } from './routes/ofertas-relampago'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CadastroRouteImport } from './routes/cadastro'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MomentoSlugRouteImport } from './routes/momento.$slug'
 import { Route as DestaqueSlugRouteImport } from './routes/destaque.$slug'
 import { Route as CheckoutPlanRouteImport } from './routes/checkout.$plan'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const OfertasRelampagoRoute = OfertasRelampagoRouteImport.update({
   id: '/ofertas-relampago',
@@ -31,6 +33,10 @@ const LoginRoute = LoginRouteImport.update({
 const CadastroRoute = CadastroRouteImport.update({
   id: '/cadastro',
   path: '/cadastro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -58,12 +64,18 @@ const CategoriaSlugRoute = CategoriaSlugRouteImport.update({
   path: '/categoria/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
@@ -74,6 +86,7 @@ export interface FileRoutesByTo {
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
@@ -82,9 +95,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/cadastro': typeof CadastroRoute
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
@@ -97,6 +112,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/ofertas-relampago'
+    | '/dashboard'
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
@@ -107,6 +123,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/ofertas-relampago'
+    | '/dashboard'
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
@@ -114,9 +131,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/cadastro'
     | '/login'
     | '/ofertas-relampago'
+    | '/_authenticated/dashboard'
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
@@ -125,6 +144,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   CadastroRoute: typeof CadastroRoute
   LoginRoute: typeof LoginRoute
   OfertasRelampagoRoute: typeof OfertasRelampagoRoute
@@ -155,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/cadastro'
       fullPath: '/cadastro'
       preLoaderRoute: typeof CadastroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -192,11 +219,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   CadastroRoute: CadastroRoute,
   LoginRoute: LoginRoute,
   OfertasRelampagoRoute: OfertasRelampagoRoute,
