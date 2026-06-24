@@ -130,7 +130,6 @@ export const incrementAccessFn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ slug: z.string() }).parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await supabaseAdmin.rpc("noop").select(); // ignored, just keep tree-shake happy
     const { data: c } = await supabaseAdmin
       .from("companies")
       .select("id, access_count")
