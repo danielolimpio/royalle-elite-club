@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { useState } from "react";
 import { Crown, Lock, CreditCard, QrCode, FileText, Check, ArrowRight } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteLayout";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout/$plan")({
   head: () => ({ meta: [{ title: "Checkout — Royalle Club" }] }),
@@ -24,14 +26,25 @@ function CheckoutPage() {
 
   const set = (k: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) => setF({ ...f, [k]: e.target.value });
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     if (f.email !== f.emailConfirm) return setError("Os e-mails não coincidem.");
     if (f.senha !== f.senhaConfirm) return setError("As senhas não coincidem.");
     if (f.senha.length < 6) return setError("A senha deve ter ao menos 6 caracteres.");
     setLoading(true);
-    setTimeout(() => { navigate({ to: "/login" }); }, 1400);
+    const { error } = await supabase.auth.signUp({
+      email: f.email,
+      password: f.senha,
+      options: {
+        emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/dashboard` : undefined,
+        data: { full_name: f.nome, cpf: f.cpf, whatsapp: f.whatsapp, plan },
+      },
+    });
+    setLoading(false);
+    if (error) { setError(error.message); return; }
+    toast.success("Conta criada! Bem-vindo ao Royalle.");
+    navigate({ to: "/dashboard" });
   }
 
   const field = (label: string, key: keyof Form, type = "text", placeholder = "") => (
