@@ -20,10 +20,20 @@ function LoginPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password: pwd });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
+    if (error) { setLoading(false); toast.error(error.message); return; }
+    let isAdmin = false;
+    if (data.user) {
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", data.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      isAdmin = !!roles;
+    }
     setLoading(false);
-    if (error) { toast.error(error.message); return; }
-    navigate({ to: from === "admin" ? "/admin" : "/dashboard" });
+    navigate({ to: isAdmin || from === "admin" ? "/admin" : "/dashboard" });
   }
   return (
     <SiteShell>
