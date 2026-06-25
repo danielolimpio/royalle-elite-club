@@ -16,12 +16,23 @@ const promotionSchema = z.object({
   id: z.string().uuid().optional(),
   title: z.string().min(1),
   description: z.string().optional().nullable(),
+  type: z.enum(["cupom","cashback","frete_gratis","oferta","percentual","fixo"]).optional(),
   discount_percent: z.number().optional().nullable(),
+  discount_value: z.number().optional().nullable(),
   coupon_code: z.string().optional().nullable(),
   redirect_url: z.string().url(),
   rules: z.string().optional().nullable(),
   sort_order: z.number().int().optional(),
   active: z.boolean().optional(),
+  featured: z.boolean().optional(),
+  starts_at: z.string().optional().nullable(),
+  expires_at: z.string().optional().nullable(),
+});
+
+const linkSchema = z.object({
+  id: z.string().uuid().optional(),
+  name: z.string().min(1),
+  url: z.string().url(),
 });
 
 const companySchema = z.object({
@@ -39,7 +50,15 @@ const companySchema = z.object({
   rules: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   featured: z.boolean().optional(),
+  site_url: z.string().url().optional().nullable().or(z.literal("")),
+  whatsapp: z.string().optional().nullable(),
+  instagram: z.string().optional().nullable(),
+  email: z.string().email().optional().nullable().or(z.literal("")),
+  status: z.enum(["active","inactive"]).optional(),
+  sort_order: z.number().int().optional(),
+  discount_highlight: z.number().optional().nullable(),
   promotions: z.array(promotionSchema).default([]),
+  links: z.array(linkSchema).default([]),
 });
 
 export const isAdminFn = createServerFn({ method: "GET" })
@@ -83,7 +102,12 @@ export const adminGetCompanyFn = createServerFn({ method: "GET" })
       .select("*")
       .eq("company_id", company.id)
       .order("sort_order");
-    return { ...company, promotions: promotions ?? [] };
+    const { data: links } = await context.supabase
+      .from("company_links")
+      .select("*")
+      .eq("company_id", company.id)
+      .order("sort_order");
+    return { ...company, promotions: promotions ?? [], links: links ?? [] };
   });
 
 export const adminSaveCompanyFn = createServerFn({ method: "POST" })
@@ -91,7 +115,12 @@ export const adminSaveCompanyFn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => companySchema.parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { promotions, id, ...payload } = data;
+    const { promotions, links, id, ...rawPayload } = data;
+    const payload: any = { ...rawPayload };
+    // Normalize empty strings
+    for (const k of ["site_url","email","logo_url","cover_url"]) {
+      if (payload[k] === "") payload[k] = null;
+    }
     let companyId = id;
     if (companyId) {
       const { error } = await context.supabase.from("companies").update(payload).eq("id", companyId);
@@ -112,14 +141,30 @@ export const adminSaveCompanyFn = createServerFn({ method: "POST" })
         company_id: companyId!,
         title: p.title,
         description: p.description ?? null,
+        type: p.type ?? "cupom",
         discount_percent: p.discount_percent ?? null,
+        discount_value: p.discount_value ?? null,
         coupon_code: p.coupon_code ?? null,
         redirect_url: p.redirect_url,
         rules: p.rules ?? null,
         sort_order: p.sort_order ?? idx,
         active: p.active ?? true,
+        featured: p.featured ?? false,
+        starts_at: p.starts_at || null,
+        expires_at: p.expires_at || null,
       }));
       const { error } = await context.supabase.from("promotions").insert(rows);
+      if (error) throw error;
+    }
+    await context.supabase.from("company_links").delete().eq("company_id", companyId);
+    if (links.length) {
+      const linkRows = links.map((l, idx) => ({
+        company_id: companyId!,
+        name: l.name,
+        url: l.url,
+        sort_order: idx,
+      }));
+      const { error } = await context.supabase.from("company_links").insert(linkRows);
       if (error) throw error;
     }
     return { id: companyId };

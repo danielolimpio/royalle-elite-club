@@ -10,7 +10,7 @@ function getPublicClient() {
 }
 
 const COMPANY_COLS =
-  "id, slug, name, category_id, logo_url, cover_url, short_description, long_description, cta_title, cta_text, persuasion_text, rules, city, featured, access_count, created_at";
+  "id, slug, name, category_id, logo_url, cover_url, short_description, long_description, cta_title, cta_text, persuasion_text, rules, city, featured, access_count, created_at, site_url, whatsapp, instagram, email, status, sort_order, discount_highlight";
 
 export const listCategoriesFn = createServerFn({ method: "GET" }).handler(async () => {
   const sb = getPublicClient();
@@ -56,11 +56,16 @@ export const getCompanyBySlugFn = createServerFn({ method: "GET" })
     if (!company) return null;
     const { data: promos } = await sb
       .from("promotions")
-      .select("id, title, description, discount_percent, coupon_code, redirect_url, rules, sort_order, active")
+      .select("id, title, description, type, discount_percent, discount_value, coupon_code, redirect_url, rules, sort_order, active, featured, starts_at, expires_at")
       .eq("company_id", company.id)
       .eq("active", true)
       .order("sort_order");
-    return { ...company, promotions: promos ?? [] };
+    const { data: links } = await sb
+      .from("company_links")
+      .select("id, name, url, sort_order")
+      .eq("company_id", company.id)
+      .order("sort_order");
+    return { ...company, promotions: promos ?? [], links: links ?? [] };
   });
 
 export const getMostAccessedFn = createServerFn({ method: "GET" }).handler(async () => {
