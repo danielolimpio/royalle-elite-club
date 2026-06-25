@@ -57,6 +57,7 @@ const companySchema = z.object({
   status: z.enum(["active","inactive"]).optional(),
   sort_order: z.number().int().optional(),
   discount_highlight: z.number().optional().nullable(),
+  placements: z.array(z.enum(["flash","destaque","familia","vibrar"])).default([]),
   promotions: z.array(promotionSchema).default([]),
   links: z.array(linkSchema).default([]),
 });
