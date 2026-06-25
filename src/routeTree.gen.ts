@@ -25,6 +25,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminEmpresasRouteImport } from './routes/_authenticated/admin.empresas'
+import { Route as AuthenticatedAdminBannersRouteImport } from './routes/_authenticated/admin.banners'
 import { Route as AuthenticatedAdminEmpresasIndexRouteImport } from './routes/_authenticated/admin.empresas.index'
 import { Route as AuthenticatedAdminEmpresasNovaRouteImport } from './routes/_authenticated/admin.empresas.nova'
 import { Route as AuthenticatedAdminEmpresasIdRouteImport } from './routes/_authenticated/admin.empresas.$id'
@@ -109,6 +110,12 @@ const AuthenticatedAdminEmpresasRoute =
     path: '/empresas',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminBannersRoute =
+  AuthenticatedAdminBannersRouteImport.update({
+    id: '/banners',
+    path: '/banners',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminEmpresasIndexRoute =
   AuthenticatedAdminEmpresasIndexRouteImport.update({
     id: '/',
@@ -142,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/destaque/$slug': typeof DestaqueSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/momento/$slug': typeof MomentoSlugRoute
+  '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/empresas/$id': typeof AuthenticatedAdminEmpresasIdRoute
@@ -161,6 +169,7 @@ export interface FileRoutesByTo {
   '/destaque/$slug': typeof DestaqueSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/momento/$slug': typeof MomentoSlugRoute
+  '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/empresas/$id': typeof AuthenticatedAdminEmpresasIdRoute
   '/admin/empresas/nova': typeof AuthenticatedAdminEmpresasNovaRoute
@@ -182,6 +191,7 @@ export interface FileRoutesById {
   '/destaque/$slug': typeof DestaqueSlugRoute
   '/empresa/$slug': typeof EmpresaSlugRoute
   '/momento/$slug': typeof MomentoSlugRoute
+  '/_authenticated/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/_authenticated/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/empresas/$id': typeof AuthenticatedAdminEmpresasIdRoute
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/destaque/$slug'
     | '/empresa/$slug'
     | '/momento/$slug'
+    | '/admin/banners'
     | '/admin/empresas'
     | '/admin/'
     | '/admin/empresas/$id'
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/destaque/$slug'
     | '/empresa/$slug'
     | '/momento/$slug'
+    | '/admin/banners'
     | '/admin'
     | '/admin/empresas/$id'
     | '/admin/empresas/nova'
@@ -243,6 +255,7 @@ export interface FileRouteTypes {
     | '/destaque/$slug'
     | '/empresa/$slug'
     | '/momento/$slug'
+    | '/_authenticated/admin/banners'
     | '/_authenticated/admin/empresas'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/empresas/$id'
@@ -379,6 +392,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminEmpresasRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/banners': {
+      id: '/_authenticated/admin/banners'
+      path: '/banners'
+      fullPath: '/admin/banners'
+      preLoaderRoute: typeof AuthenticatedAdminBannersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/empresas/': {
       id: '/_authenticated/admin/empresas/'
       path: '/'
@@ -422,11 +442,13 @@ const AuthenticatedAdminEmpresasRouteWithChildren =
   )
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminBannersRoute: typeof AuthenticatedAdminBannersRoute
   AuthenticatedAdminEmpresasRoute: typeof AuthenticatedAdminEmpresasRouteWithChildren
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminBannersRoute: AuthenticatedAdminBannersRoute,
   AuthenticatedAdminEmpresasRoute: AuthenticatedAdminEmpresasRouteWithChildren,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
