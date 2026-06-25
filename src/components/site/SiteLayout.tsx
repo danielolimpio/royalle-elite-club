@@ -8,7 +8,7 @@ const NAV = [
   { label: "Serviços", href: "/servicos" },
   { label: "Whitelabel", href: "/whitelabel" },
   { label: "Parcerias", href: "/parcerias" },
-  { label: "Planos", href: "/cadastro" },
+  { label: "Planos", href: "/planos" },
   { label: "Contato", href: "/contato" },
 ];
 
@@ -109,7 +109,7 @@ export function SiteFooter() {
           </div>
         </div>
         {[
-          { t: "Clube", links: [["Sobre","/sobre"],["Como funciona","/servicos"],["Planos","/cadastro"],["Whitelabel","/whitelabel"]] },
+          { t: "Clube", links: [["Sobre","/sobre"],["Como funciona","/servicos"],["Planos","/planos"],["Whitelabel","/whitelabel"]] },
           { t: "Membros", links: [["Entrar","/login"],["Cadastrar","/cadastro"],["Indicar","/cadastro"],["Suporte","/contato"]] },
           { t: "Legal", links: [["Termos de uso","/contato"],["Privacidade","/contato"],["Cookies","/contato"],["Imprensa","/contato"]] },
         ].map((col) => (
