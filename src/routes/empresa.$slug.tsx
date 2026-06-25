@@ -180,7 +180,7 @@ function CompanyPage() {
       )}
 
       {/* OUTRAS PROMOÇÕES */}
-      {others.length > 0 && (
+      {!showPaywall && others.length > 0 && (
         <section className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="font-display text-3xl text-[color:var(--midnight)]">Outras promoções</h2>
           <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
