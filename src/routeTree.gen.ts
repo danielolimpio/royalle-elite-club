@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhitelabelRouteImport } from './routes/whitelabel'
+import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as OfertasRelampagoRouteImport } from './routes/ofertas-relampago'
 import { Route as LoginRouteImport } from './routes/login'
@@ -33,6 +34,11 @@ import { Route as AuthenticatedAdminEmpresasIdRouteImport } from './routes/_auth
 const WhitelabelRoute = WhitelabelRouteImport.update({
   id: '/whitelabel',
   path: '/whitelabel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanosRoute = PlanosRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
   '/planos': typeof PlanosRoute
+  '/sobre': typeof SobreRoute
   '/whitelabel': typeof WhitelabelRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
   '/planos': typeof PlanosRoute
+  '/sobre': typeof SobreRoute
   '/whitelabel': typeof WhitelabelRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/ofertas-relampago': typeof OfertasRelampagoRoute
   '/planos': typeof PlanosRoute
+  '/sobre': typeof SobreRoute
   '/whitelabel': typeof WhitelabelRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/ofertas-relampago'
     | '/planos'
+    | '/sobre'
     | '/whitelabel'
     | '/admin'
     | '/dashboard'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/ofertas-relampago'
     | '/planos'
+    | '/sobre'
     | '/whitelabel'
     | '/dashboard'
     | '/categoria/$slug'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/ofertas-relampago'
     | '/planos'
+    | '/sobre'
     | '/whitelabel'
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
@@ -270,6 +282,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OfertasRelampagoRoute: typeof OfertasRelampagoRoute
   PlanosRoute: typeof PlanosRoute
+  SobreRoute: typeof SobreRoute
   WhitelabelRoute: typeof WhitelabelRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CheckoutPlanRoute: typeof CheckoutPlanRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/whitelabel'
       fullPath: '/whitelabel'
       preLoaderRoute: typeof WhitelabelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/planos': {
@@ -476,6 +496,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OfertasRelampagoRoute: OfertasRelampagoRoute,
   PlanosRoute: PlanosRoute,
+  SobreRoute: SobreRoute,
   WhitelabelRoute: WhitelabelRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   CheckoutPlanRoute: CheckoutPlanRoute,
