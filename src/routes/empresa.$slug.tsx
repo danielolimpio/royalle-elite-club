@@ -93,7 +93,35 @@ function CompanyPage() {
       </section>
 
       {/* PROMO PRINCIPAL */}
-      {featured && (
+      {showPaywall ? (
+        <section className="mx-auto -mt-10 max-w-3xl px-6">
+          <div className="rounded-3xl border border-[color:var(--accent)]/30 bg-white p-10 text-center shadow-2xl">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[color:var(--accent)]/10 text-[color:var(--accent)]">
+              <Lock className="h-6 w-6" />
+            </div>
+            <h2 className="mt-5 font-display text-3xl text-[color:var(--midnight)]">
+              Conteúdo exclusivo para membros Royalle
+            </h2>
+            <p className="mt-3 text-[color:var(--muted-foreground)]">
+              Para ativar este desconto, você precisa de uma assinatura ativa. Conheça os planos a partir de R$ 9,90/mês e libere todos os benefícios.
+            </p>
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+              <Link to="/planos" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-7 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg hover:scale-[1.02] transition">
+                Ver planos <ArrowUpRight className="h-4 w-4" />
+              </Link>
+              {!user ? (
+                <Link to="/login" className="inline-flex items-center gap-2 rounded-full border border-[color:var(--midnight)] px-7 py-3 text-sm font-bold uppercase tracking-wide text-[color:var(--midnight)] hover:bg-[color:var(--midnight)] hover:text-white transition">
+                  Já sou membro
+                </Link>
+              ) : (
+                <Link to="/dashboard" className="inline-flex items-center gap-2 rounded-full border border-[color:var(--midnight)] px-7 py-3 text-sm font-bold uppercase tracking-wide text-[color:var(--midnight)] hover:bg-[color:var(--midnight)] hover:text-white transition">
+                  Ir para minha área
+                </Link>
+              )}
+            </div>
+          </div>
+        </section>
+      ) : featured && (
         <section className="mx-auto -mt-10 max-w-5xl px-6">
           <div className="rounded-3xl border border-[color:var(--accent)]/30 bg-white p-8 shadow-2xl md:p-12">
             <div className="grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-center">
