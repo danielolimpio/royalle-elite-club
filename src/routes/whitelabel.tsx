@@ -29,6 +29,9 @@ import iconChart from "@/assets/wl/icon-chart-line-animation.gif.asset.json";
 import iconCog from "@/assets/wl/icon-cog-animation.gif.asset.json";
 import iconExt from "@/assets/wl/icon-extension-animation.gif.asset.json";
 import iconHands from "@/assets/wl/icon-handshake.png.asset.json";
+import iconRocket from "@/assets/wl/icon_rocket_animation.gif.asset.json";
+import iconWebpage from "@/assets/wl/icon_webpage_animation.gif.asset.json";
+import iconProfile from "@/assets/wl/icon_profile_animation.gif.asset.json";
 
 export const Route = createFileRoute("/whitelabel")({
   head: () => ({
@@ -272,11 +275,11 @@ function WhitelabelPage() {
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: iconHands.url, t: "Marca em primeiro lugar", d: "App, web e comunicação com a sua identidade — não a nossa. Seus clientes nunca veem Royalle." },
-              { icon: iconChart.url, t: "Dashboard analítico completo", d: "Acompanhe engajamento, economia gerada, NPS e LTV em tempo real." },
+              { icon: iconProfile.url, t: "Marca em primeiro lugar", d: "App, web e comunicação com a sua identidade — não a nossa. Seus clientes nunca veem Royalle." },
+              { icon: iconWebpage.url, t: "Dashboard analítico completo", d: "Acompanhe engajamento, economia gerada, NPS e LTV em tempo real." },
               { icon: iconCog.url, t: "Operação chave-na-mão", d: "Curadoria de parceiros, suporte ao usuário final e atualizações constantes por nossa conta." },
               { icon: iconExt.url, t: "Integrações nativas", d: "Conecte com o seu billing, CRM e canais de atendimento via API REST e webhooks." },
-              { icon: iconHands.url, t: "Onboarding em 7 dias", d: "Do contrato ao lançamento. Equipe dedicada para configurar marca, planos e fluxo de assinatura." },
+              { icon: iconRocket.url, t: "Onboarding em 7 dias", d: "Do contrato ao lançamento. Equipe dedicada para configurar marca, planos e fluxo de assinatura." },
               { icon: iconChart.url, t: "Crescimento garantido", d: "Casos reais mostram ROI positivo já no terceiro mês de operação do clube." },
             ].map((v) => (
               <div key={v.t} className="group rounded-3xl border border-purple-100 bg-white p-7 shadow-[0_10px_40px_-20px_rgba(76,29,149,0.25)] transition hover:-translate-y-1 hover:shadow-[0_20px_60px_-20px_rgba(76,29,149,0.4)]">
