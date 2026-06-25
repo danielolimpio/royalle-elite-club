@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Crown, Lock, CreditCard, QrCode, FileText, Check, ArrowRight } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { activateSubscriptionFn } from "@/lib/account.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout/$plan")({
@@ -10,16 +12,28 @@ export const Route = createFileRoute("/checkout/$plan")({
   component: CheckoutPage,
 });
 
+const PLAN_DETAILS: Record<string, { name: string; price: string; type: "individual" | "white_label"; description: string; features: string[] }> = {
+  individual: { name: "Royalle Individual", price: "R$ 9,90/mês", type: "individual", description: "Acesso completo ao clube de benefícios.", features: ["Acesso a +500 marcas","Cashback em todas as categorias","Ofertas relâmpago exclusivas","Suporte por WhatsApp"] },
+  inicial: { name: "White Label · Inicial", price: "R$ 1.370/mês", type: "white_label", description: "Clube completo com a sua marca, para até 1.000 beneficiários.", features: ["Clube com sua marca","+300 parcerias nacionais","Campanhas padronizadas","Validação de usuários"] },
+  padrao: { name: "White Label · Padrão", price: "R$ 2.270/mês", type: "white_label", description: "Para acelerar adoção e ampliar ativações.", features: ["Até 3.000 beneficiários","Domínio próprio","Campanhas personalizadas","Calendário de sorteios"] },
+  avancado: { name: "White Label · Avançado", price: "R$ 3.670/mês", type: "white_label", description: "Para escalar e integrar com mais autonomia.", features: ["Até 10.000 beneficiários","Aplicativo dedicado","Integração de sistemas","E-mail marketing e push"] },
+  pro: { name: "White Label · Pro", price: "Sob consulta", type: "white_label", description: "Personalização total e integrações sob medida.", features: ["Volume ilimitado","Cartão-presente","Sorteios exclusivos","Prospecção dedicada"] },
+};
+
 type Form = {
   nome: string; cpf: string; email: string; emailConfirm: string;
   senha: string; senhaConfirm: string; whatsapp: string; metodo: "credit" | "pix" | "boleto";
+  empresa: string; cnpj: string;
 };
 
 function CheckoutPage() {
   const { plan } = useParams({ from: "/checkout/$plan" });
+  const planMeta = PLAN_DETAILS[plan] ?? PLAN_DETAILS.individual;
+  const isCompany = planMeta.type === "white_label";
   const navigate = useNavigate();
+  const activate = useServerFn(activateSubscriptionFn);
   const [f, setF] = useState<Form>({
-    nome: "", cpf: "", email: "", emailConfirm: "", senha: "", senhaConfirm: "", whatsapp: "", metodo: "credit",
+    nome: "", cpf: "", email: "", emailConfirm: "", senha: "", senhaConfirm: "", whatsapp: "", metodo: "credit", empresa: "", cnpj: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,17 +47,26 @@ function CheckoutPage() {
     if (f.senha !== f.senhaConfirm) return setError("As senhas não coincidem.");
     if (f.senha.length < 6) return setError("A senha deve ter ao menos 6 caracteres.");
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data: signUp, error } = await supabase.auth.signUp({
       email: f.email,
       password: f.senha,
       options: {
         emailRedirectTo: typeof window !== "undefined" ? `${window.location.origin}/dashboard` : undefined,
-        data: { full_name: f.nome, cpf: f.cpf, whatsapp: f.whatsapp, plan },
+        data: { full_name: f.nome, cpf: f.cpf, whatsapp: f.whatsapp, plan, empresa: f.empresa, cnpj: f.cnpj },
       },
     });
+    if (error) { setLoading(false); setError(error.message); return; }
+    // Auto sign-in if session not present (e.g. email confirmation disabled scenarios)
+    if (!signUp.session) {
+      await supabase.auth.signInWithPassword({ email: f.email, password: f.senha });
+    }
+    try {
+      await activate({ data: { plan, planType: planMeta.type } });
+    } catch (e: any) {
+      console.error("activate sub failed", e);
+    }
     setLoading(false);
-    if (error) { setError(error.message); return; }
-    toast.success("Conta criada! Bem-vindo ao Royalle.");
+    toast.success("Assinatura ativada! Bem-vindo ao Royalle.");
     navigate({ to: "/dashboard" });
   }
 
