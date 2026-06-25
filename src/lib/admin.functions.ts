@@ -57,6 +57,7 @@ const companySchema = z.object({
   status: z.enum(["active","inactive"]).optional(),
   sort_order: z.number().int().optional(),
   discount_highlight: z.number().optional().nullable(),
+  placements: z.array(z.enum(["flash","destaque","familia","vibrar"])).default([]),
   promotions: z.array(promotionSchema).default([]),
   links: z.array(linkSchema).default([]),
 });
@@ -209,4 +210,61 @@ export const adminDuplicateCompanyFn = createServerFn({ method: "POST" })
         .insert(srcPromos.map((p) => ({ ...p, company_id: ins.id })));
     }
     return { id: ins.id };
+  });
+
+// ============ Hero banners (carousel) ============
+
+const bannerSchema = z.object({
+  id: z.string().uuid().optional(),
+  image_url: z.string().min(1),
+  link_url: z.string().optional().nullable(),
+  title: z.string().optional().nullable(),
+  subtitle: z.string().optional().nullable(),
+  alt: z.string().optional().nullable(),
+  sort_order: z.number().int().optional(),
+  active: z.boolean().optional(),
+});
+
+export const adminListBannersFn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { data, error } = await context.supabase
+      .from("hero_banners")
+      .select("*")
+      .order("sort_order")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data ?? [];
+  });
+
+export const adminSaveBannerFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => bannerSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { id, ...payload } = data;
+    const row: any = { ...payload };
+    for (const k of ["link_url","title","subtitle","alt"]) {
+      if (row[k] === "") row[k] = null;
+    }
+    if (id) {
+      const { error } = await context.supabase.from("hero_banners").update(row).eq("id", id);
+      if (error) throw error;
+      return { id };
+    }
+    const { data: ins, error } = await context.supabase
+      .from("hero_banners").insert(row).select("id").single();
+    if (error) throw error;
+    return { id: ins.id };
+  });
+
+export const adminDeleteBannerFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { error } = await context.supabase.from("hero_banners").delete().eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
   });

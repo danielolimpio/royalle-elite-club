@@ -14,7 +14,7 @@ import { slugify } from "@/lib/slug";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { CATEGORIES as ROYALLE_CATEGORIES } from "@/lib/categories";
-import { getMostAccessedFn, getRecentFn, getSpecialMomentsFn, listCompaniesFn } from "@/lib/companies.functions";
+import { getMostAccessedFn, getRecentFn, getSpecialMomentsFn, listCompaniesFn, listHeroBannersFn } from "@/lib/companies.functions";
 
 import hero from "@/assets/hero-royalle.jpg";
 import banner1 from "@/assets/banner-1.jpg";
@@ -163,53 +163,58 @@ function CategoriesCircles() {
 }
 
 function HeroCarousel() {
+  const fn = useServerFn(listHeroBannersFn);
+  const q = useQuery({ queryKey: ["hero-banners"], queryFn: () => fn() });
+  const dynamic = (q.data ?? []).map((b: any) => ({
+    img: b.image_url,
+    href: b.link_url || "/login",
+    title: b.title || "",
+    eyebrow: b.subtitle || "Royalle",
+    desc: "",
+    cta: "Aproveitar",
+    alt: b.alt || b.title || "Banner Royalle",
+  }));
+  const slides = dynamic.length ? dynamic : SLIDES.map((s) => ({ ...s, href: "/login", alt: s.title }));
   const [i, setI] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setI((p) => (p + 1) % SLIDES.length), 6000);
+    if (!slides.length) return;
+    setI((p) => (p >= slides.length ? 0 : p));
+    const t = setInterval(() => setI((p) => (p + 1) % slides.length), 6000);
     return () => clearInterval(t);
-  }, []);
-  const go = (d: number) => setI((p) => (p + d + SLIDES.length) % SLIDES.length);
+  }, [slides.length]);
+  const go = (d: number) => setI((p) => (p + d + slides.length) % slides.length);
+  const cur = slides[i] ?? slides[0];
+  if (!cur) return null;
+  const isExternal = /^https?:\/\//i.test(cur.href);
   return (
     <section className="bg-[color:var(--ivory)] pb-16">
       <div className="mx-auto max-w-[1400px] px-6">
-        <div className="relative overflow-hidden rounded-sm border border-[color:var(--gold)]/40 shadow-luxe">
+        <div className="relative overflow-hidden rounded-sm border border-[color:var(--gold)]/40 shadow-luxe" style={{ aspectRatio: "1300 / 300" }}>
           <div className="absolute inset-0 bg-[color:var(--midnight)]" />
-          {SLIDES.map((s, idx) => (
+          {slides.map((s, idx) => (
             <div
               key={idx}
               className={`absolute inset-0 transition-opacity duration-1000 ${idx === i ? "opacity-100" : "opacity-0"}`}
             >
-              <img src={s.img} alt={s.title} className="h-full w-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[color:var(--midnight)]/95 via-[color:var(--midnight)]/70 to-transparent" />
+              {isExternal ? (
+                <a href={s.href} target="_blank" rel="noopener noreferrer" className="block h-full w-full">
+                  <img src={s.img} alt={(s as any).alt ?? s.title} className="h-full w-full object-cover" />
+                </a>
+              ) : (
+                <Link to={s.href as any} className="block h-full w-full">
+                  <img src={s.img} alt={(s as any).alt ?? s.title} className="h-full w-full object-cover" />
+                </Link>
+              )}
             </div>
           ))}
-          <div className="relative grid min-h-[220px] grid-cols-1 items-center px-8 py-6 md:min-h-[260px] md:px-16">
-            <div className="max-w-xl text-[color:var(--ivory)]">
-              <div className="ornament mb-5" style={{ color: "var(--gold)" }}>{SLIDES[i].eyebrow}</div>
-              <h1 className="font-display text-4xl leading-tight md:text-6xl">
-                {SLIDES[i].title}
-              </h1>
-              <p className="mt-5 max-w-md text-sm leading-relaxed text-[color:var(--ivory)]/80 md:text-base">
-                {SLIDES[i].desc}
-              </p>
-              <div className="mt-8 flex gap-3">
-                <Link to="/login" className="inline-flex items-center gap-2 bg-[color:var(--gold)] px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--midnight)] transition hover:bg-[color:var(--ivory)]">
-                  {SLIDES[i].cta}
-                </Link>
-                <Link to="/cadastro" className="inline-flex items-center gap-2 border border-[color:var(--ivory)]/30 px-7 py-3 text-xs uppercase tracking-[0.3em] text-[color:var(--ivory)] transition hover:border-[color:var(--gold)] hover:text-[color:var(--gold)]">
-                  Saber mais
-                </Link>
-              </div>
-            </div>
-          </div>
-          <button onClick={() => go(-1)} className="absolute left-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--midnight)]/40 text-[color:var(--gold)] backdrop-blur transition hover:bg-[color:var(--gold)] hover:text-[color:var(--midnight)]">
+          <button onClick={() => go(-1)} className="absolute left-4 top-1/2 z-20 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--midnight)]/40 text-[color:var(--gold)] backdrop-blur transition hover:bg-[color:var(--gold)] hover:text-[color:var(--midnight)]">
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <button onClick={() => go(1)} className="absolute right-4 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--midnight)]/40 text-[color:var(--gold)] backdrop-blur transition hover:bg-[color:var(--gold)] hover:text-[color:var(--midnight)]">
+          <button onClick={() => go(1)} className="absolute right-4 top-1/2 z-20 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-[color:var(--gold)]/40 bg-[color:var(--midnight)]/40 text-[color:var(--gold)] backdrop-blur transition hover:bg-[color:var(--gold)] hover:text-[color:var(--midnight)]">
             <ChevronRight className="h-5 w-5" />
           </button>
-          <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
-            {SLIDES.map((_, idx) => (
+          <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+            {slides.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setI(idx)}

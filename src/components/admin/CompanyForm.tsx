@@ -48,6 +48,7 @@ type CompanyData = {
   status?: "active" | "inactive";
   sort_order?: number;
   discount_highlight?: number | null;
+  placements?: ("flash"|"destaque"|"familia"|"vibrar")[];
   promotions: Promotion[];
   links: CompanyLink[];
 };
@@ -73,6 +74,7 @@ const empty: CompanyData = {
   status: "active",
   sort_order: 0,
   discount_highlight: null,
+  placements: [],
   promotions: [{ title: "", redirect_url: "", active: true, type: "cupom", featured: true }],
   links: [],
 };
@@ -226,6 +228,33 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
             <input type="checkbox" checked={!!data.featured} onChange={(e) => set("featured", e.target.checked)} />
             Exibir nos destaques da home
           </label>
+        </Field>
+        <Field label="Exibir a oferta em (vitrines)" full>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {[
+              { v: "flash", l: "Ofertas Relâmpago Royalle" },
+              { v: "destaque", l: "Descontos em Destaque" },
+              { v: "familia", l: "Diversão em Família" },
+              { v: "vibrar", l: "Vibrar Junto" },
+            ].map((opt) => {
+              const checked = (data.placements ?? []).includes(opt.v as any);
+              return (
+                <label key={opt.v} className="flex items-center gap-2 rounded-lg border border-[color:var(--border)] bg-white px-3 py-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={(e) => {
+                      const cur = new Set(data.placements ?? []);
+                      if (e.target.checked) cur.add(opt.v as any); else cur.delete(opt.v as any);
+                      set("placements", Array.from(cur) as any);
+                    }}
+                  />
+                  {opt.l}
+                </label>
+              );
+            })}
+          </div>
+          <p className="mt-1 text-xs text-[color:var(--muted-foreground)]">Uma mesma oferta pode aparecer em vários locais simultaneamente.</p>
         </Field>
       </Section>
 

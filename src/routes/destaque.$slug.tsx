@@ -1,12 +1,15 @@
 import { createFileRoute, Link, notFound, useParams } from "@tanstack/react-router";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteLayout";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { listCompaniesByPlacementFn } from "@/lib/companies.functions";
 import feat1 from "@/assets/feat-1.jpg";
 import feat2 from "@/assets/feat-2.jpg";
 import feat3 from "@/assets/feat-3.jpg";
 
-const DESTAQUES: Record<string, { name: string; img: string; eyebrow: string; desc: string; items: { brand: string; desc: string; tag: string }[] }> = {
-  "descontos-em-destaque": { name: "Descontos em Destaque", img: feat1, eyebrow: "Destaques", desc: "As parcerias mais desejadas pelos membros Royalle.", items: [
+const DESTAQUES: Record<string, { name: string; img: string; eyebrow: string; desc: string; placement: "destaque"|"familia"|"vibrar"; items: { brand: string; desc: string; tag: string }[] }> = {
+  "descontos-em-destaque": { name: "Descontos em Destaque", img: feat1, eyebrow: "Destaques", placement: "destaque", desc: "As parcerias mais desejadas pelos membros Royalle.", items: [
     { brand: "Maison Aurea", desc: "Até 30% em coleção exclusiva", tag: "30% off" },
     { brand: "Domaine Royal", desc: "Até 45% em adegas premium", tag: "45% off" },
     { brand: "Atelier Noir", desc: "Até 25% em alfaiataria", tag: "25% off" },
@@ -14,7 +17,7 @@ const DESTAQUES: Record<string, { name: string; img: string; eyebrow: string; de
     { brand: "Casa di Lusso", desc: "Até 40% em mobiliário", tag: "40% off" },
     { brand: "Édition Privée", desc: "Cashback 12% em luxo", tag: "12% cashback" },
   ]},
-  "diversao-em-familia": { name: "Diversão em Família", img: feat2, eyebrow: "Família", desc: "Experiências cuidadosamente curadas para curtir com quem você ama.", items: [
+  "diversao-em-familia": { name: "Diversão em Família", img: feat2, eyebrow: "Família", placement: "familia", desc: "Experiências cuidadosamente curadas para curtir com quem você ama.", items: [
     { brand: "Beach Park Família", desc: "Combo com 15% off", tag: "15% off" },
     { brand: "Hot Park", desc: "Ingresso família 20% off", tag: "20% off" },
     { brand: "Hopi Hari", desc: "Pacote 4 pessoas", tag: "Combo" },
@@ -22,7 +25,7 @@ const DESTAQUES: Record<string, { name: string; img: string; eyebrow: string; de
     { brand: "Aquário Royale", desc: "Visita guiada", tag: "Guiada" },
     { brand: "Sympla Kids", desc: "Cashback em shows infantis", tag: "Cashback" },
   ]},
-  "vibrar-junto": { name: "Vibrar Junto", img: feat3, eyebrow: "Torcida", desc: "Curadoria de ofertas para os grandes momentos esportivos.", items: [
+  "vibrar-junto": { name: "Vibrar Junto", img: feat3, eyebrow: "Torcida", placement: "vibrar", desc: "Curadoria de ofertas para os grandes momentos esportivos.", items: [
     { brand: "Sócio Royale", desc: "Plano sócio com bolsa", tag: "Bolsa" },
     { brand: "Centauro Plus", desc: "10% em camisas oficiais", tag: "10% off" },
     { brand: "DAZN Royalle", desc: "Mensalidade promocional", tag: "Promo" },
@@ -47,6 +50,8 @@ export const Route = createFileRoute("/destaque/$slug")({
 function DestaquePage() {
   const { slug } = useParams({ from: "/destaque/$slug" });
   const d = DESTAQUES[slug]!;
+  const fn = useServerFn(listCompaniesByPlacementFn);
+  const q = useQuery({ queryKey: ["placement", d.placement], queryFn: () => fn({ data: { placement: d.placement } }) });
   return (
     <SiteShell>
       <section className="relative overflow-hidden bg-[color:var(--midnight)] text-[color:var(--ivory)]">
@@ -61,6 +66,19 @@ function DestaquePage() {
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {(q.data ?? []).map((c: any) => (
+              <Link key={c.id} to="/empresa/$slug" params={{ slug: c.slug }} className="luxe-card group flex flex-col p-7">
+                <span className="inline-flex w-fit bg-[color:var(--gold)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--midnight)]">
+                  {c.discount_highlight ? `${c.discount_highlight}% off` : "Exclusivo"}
+                </span>
+                <h3 className="mt-5 font-display text-2xl text-[color:var(--midnight)]">{c.name}</h3>
+                <p className="mt-2 text-sm text-[color:var(--muted-foreground)]">{c.short_description ?? "Benefício exclusivo para membros."}</p>
+                <div className="mt-6 flex items-center justify-between border-t border-dashed border-[color:var(--gold)]/40 pt-4 text-[0.65rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">
+                  <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" /> {c.city ?? "Brasil"}</span>
+                  <span className="inline-flex items-center gap-1">Aproveitar <ArrowUpRight className="h-3 w-3" /></span>
+                </div>
+              </Link>
+            ))}
             {d.items.map((b) => (
               <Link key={b.brand} to="/login" className="luxe-card group flex flex-col p-7">
                 <span className="inline-flex w-fit bg-[color:var(--gold)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--midnight)]">{b.tag}</span>

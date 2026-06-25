@@ -62,6 +62,7 @@ export type Database = {
           long_description: string | null
           name: string
           persuasion_text: string | null
+          placements: string[]
           rules: string | null
           short_description: string | null
           site_url: string | null
@@ -88,6 +89,7 @@ export type Database = {
           long_description?: string | null
           name: string
           persuasion_text?: string | null
+          placements?: string[]
           rules?: string | null
           short_description?: string | null
           site_url?: string | null
@@ -114,6 +116,7 @@ export type Database = {
           long_description?: string | null
           name?: string
           persuasion_text?: string | null
+          placements?: string[]
           rules?: string | null
           short_description?: string | null
           site_url?: string | null
@@ -167,6 +170,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      hero_banners: {
+        Row: {
+          active: boolean
+          alt: string | null
+          created_at: string
+          id: string
+          image_url: string
+          link_url: string | null
+          sort_order: number
+          subtitle: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          alt?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          link_url?: string | null
+          sort_order?: number
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          alt?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          link_url?: string | null
+          sort_order?: number
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

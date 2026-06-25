@@ -2,6 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Clock, ArrowUpRight } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteLayout";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { listCompaniesByPlacementFn } from "@/lib/companies.functions";
 
 const FLASH = [
   { brand: "Maison Aurea", desc: "Coleção primavera", tag: "40% off" },
@@ -20,6 +23,8 @@ export const Route = createFileRoute("/ofertas-relampago")({
 });
 
 function FlashPage() {
+  const fn = useServerFn(listCompaniesByPlacementFn);
+  const q = useQuery({ queryKey: ["placement","flash"], queryFn: () => fn({ data: { placement: "flash" } }) });
   const [t, setT] = useState({ d: 8, h: 13, m: 10, s: 42 });
   useEffect(() => {
     const i = setInterval(() => setT((p) => {
@@ -54,6 +59,17 @@ function FlashPage() {
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {(q.data ?? []).map((c: any) => (
+              <Link key={c.id} to="/empresa/$slug" params={{ slug: c.slug }} className="luxe-card group flex flex-col p-6">
+                <span className="inline-flex w-fit bg-[color:var(--burgundy)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--ivory)]">Relâmpago</span>
+                <h3 className="mt-5 font-display text-xl text-[color:var(--midnight)]">{c.name}</h3>
+                <p className="mt-1 text-xs text-[color:var(--muted-foreground)]">{c.short_description ?? "Oferta exclusiva"}</p>
+                <div className="mt-5 flex items-center justify-between border-t border-dashed border-[color:var(--gold)]/40 pt-3">
+                  <span className="text-[0.65rem] uppercase tracking-[0.25em] text-[color:var(--gold-deep)]">{c.discount_highlight ? `${c.discount_highlight}% off` : "Exclusivo"}</span>
+                  <ArrowUpRight className="h-3 w-3 text-[color:var(--gold-deep)]" />
+                </div>
+              </Link>
+            ))}
             {FLASH.map((f) => (
               <Link key={f.brand} to="/login" className="luxe-card group flex flex-col p-6">
                 <span className="inline-flex w-fit bg-[color:var(--burgundy)] px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-[color:var(--ivory)]">Relâmpago</span>
