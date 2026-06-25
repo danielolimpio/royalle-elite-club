@@ -19,6 +19,37 @@ export const listCategoriesFn = createServerFn({ method: "GET" }).handler(async 
   return data ?? [];
 });
 
+export const listHeroBannersFn = createServerFn({ method: "GET" }).handler(async () => {
+  const sb = getPublicClient();
+  const { data, error } = await sb
+    .from("hero_banners")
+    .select("id, image_url, link_url, title, subtitle, alt, sort_order")
+    .eq("active", true)
+    .order("sort_order");
+  if (error) throw error;
+  return data ?? [];
+});
+
+export const listCompaniesByPlacementFn = createServerFn({ method: "GET" })
+  .inputValidator((input: unknown) =>
+    z.object({
+      placement: z.enum(["flash","destaque","familia","vibrar"]),
+      limit: z.number().int().min(1).max(60).optional(),
+    }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const sb = getPublicClient();
+    const { data: rows, error } = await sb
+      .from("companies")
+      .select(`${COMPANY_COLS}, placements, categories(slug, name)`)
+      .contains("placements", [data.placement])
+      .eq("status", "active")
+      .order("sort_order")
+      .limit(data.limit ?? 24);
+    if (error) throw error;
+    return rows ?? [];
+  });
+
 export const listCompaniesFn = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) =>
     z
