@@ -84,8 +84,9 @@ function CheckoutPage() {
     <SiteShell>
       <section className="border-b border-[color:var(--border)] bg-[color:var(--midnight)] py-12 text-[color:var(--ivory)]">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="ornament" style={{ color: "var(--gold)" }}>Checkout Seguro · {plan}</div>
+          <div className="ornament" style={{ color: "var(--gold)" }}>Checkout Seguro · {planMeta.name}</div>
           <h1 className="mt-3 font-display text-4xl md:text-5xl">Finalizar adesão Royalle</h1>
+          <p className="mt-2 text-sm text-white/70">{planMeta.description}</p>
         </div>
       </section>
       <section className="py-16">
@@ -94,8 +95,10 @@ function CheckoutPage() {
             <div className="border border-[color:var(--border)] bg-white p-8 shadow-soft">
               <div className="ornament mb-6" style={{ color: "var(--gold-deep)" }}>1 · Dados pessoais</div>
               <div className="grid gap-5 md:grid-cols-2">
-                {field("Nome completo", "nome", "text", "Como aparece no documento")}
+                {field(isCompany ? "Responsável" : "Nome completo", "nome", "text", "Como aparece no documento")}
                 {field("CPF", "cpf", "text", "000.000.000-00")}
+                {isCompany && field("Razão social / Empresa", "empresa", "text", "Nome da sua empresa")}
+                {isCompany && field("CNPJ", "cnpj", "text", "00.000.000/0000-00")}
                 {field("E-mail", "email", "email", "voce@royalle.club")}
                 {field("Confirme o e-mail", "emailConfirm", "email", "voce@royalle.club")}
                 {field("Senha", "senha", "password", "Mínimo 6 caracteres")}
@@ -157,14 +160,13 @@ function CheckoutPage() {
             <div className="relative overflow-hidden border border-[color:var(--gold)]/50 bg-[color:var(--midnight)] p-8 text-[color:var(--ivory)] shadow-luxe">
               <Crown className="absolute -right-6 -top-6 h-32 w-32 text-[color:var(--gold)]/10" />
               <div className="ornament" style={{ color: "var(--gold)" }}>Resumo do plano</div>
-              <h3 className="mt-3 font-display text-3xl">Royalle Individual</h3>
-              <p className="mt-2 text-sm text-[color:var(--ivory)]/70">Acesso completo ao clube — pagamento único.</p>
+              <h3 className="mt-3 font-display text-3xl">{planMeta.name}</h3>
+              <p className="mt-2 text-sm text-[color:var(--ivory)]/70">{planMeta.description}</p>
               <div className="my-8 border-y border-[color:var(--gold)]/30 py-6">
                 <div className="flex items-end justify-between">
                   <span className="text-xs uppercase tracking-[0.3em] text-[color:var(--ivory)]/60">Total</span>
                   <div>
-                    <span className="text-lg text-[color:var(--gold)]">R$</span>{" "}
-                    <span className="font-display text-5xl text-[color:var(--gold)]">9,90</span>
+                    <span className="font-display text-3xl text-[color:var(--gold)] md:text-4xl">{planMeta.price}</span>
                   </div>
                 </div>
               </div>
@@ -176,7 +178,7 @@ function CheckoutPage() {
               </div>
             </div>
             <ul className="space-y-3 text-sm text-[color:var(--midnight)]">
-              {["Acesso vitalício ao clube","Cashback em todas as categorias","Ofertas relâmpago exclusivas","Suporte concierge digital"].map((p) => (
+              {planMeta.features.map((p) => (
                 <li key={p} className="flex gap-3"><Check className="mt-0.5 h-4 w-4 text-[color:var(--gold-deep)]" /> {p}</li>
               ))}
             </ul>
