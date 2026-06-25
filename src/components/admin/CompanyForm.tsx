@@ -12,12 +12,19 @@ type Promotion = {
   id?: string;
   title: string;
   description?: string | null;
+  type?: "cupom" | "cashback" | "frete_gratis" | "oferta" | "percentual" | "fixo";
   discount_percent?: number | null;
+  discount_value?: number | null;
   coupon_code?: string | null;
   redirect_url: string;
   rules?: string | null;
   active?: boolean;
+  featured?: boolean;
+  starts_at?: string | null;
+  expires_at?: string | null;
 };
+
+type CompanyLink = { id?: string; name: string; url: string };
 
 type CompanyData = {
   id?: string;
@@ -34,7 +41,15 @@ type CompanyData = {
   rules?: string | null;
   city?: string | null;
   featured?: boolean;
+  site_url?: string | null;
+  whatsapp?: string | null;
+  instagram?: string | null;
+  email?: string | null;
+  status?: "active" | "inactive";
+  sort_order?: number;
+  discount_highlight?: number | null;
   promotions: Promotion[];
+  links: CompanyLink[];
 };
 
 const empty: CompanyData = {
@@ -51,7 +66,15 @@ const empty: CompanyData = {
   rules: "",
   city: "",
   featured: false,
-  promotions: [{ title: "", redirect_url: "", active: true }],
+  site_url: "",
+  whatsapp: "",
+  instagram: "",
+  email: "",
+  status: "active",
+  sort_order: 0,
+  discount_highlight: null,
+  promotions: [{ title: "", redirect_url: "", active: true, type: "cupom", featured: true }],
+  links: [],
 };
 
 function slugify(s: string) {
@@ -109,6 +132,16 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
     setData((d) => ({ ...d, promotions: d.promotions.filter((_, i) => i !== idx) }));
   }
 
+  function addLink() {
+    setData((d) => ({ ...d, links: [...d.links, { name: "", url: "" }] }));
+  }
+  function updateLink(idx: number, patch: Partial<CompanyLink>) {
+    setData((d) => ({ ...d, links: d.links.map((l, i) => (i === idx ? { ...l, ...patch } : l)) }));
+  }
+  function removeLink(idx: number) {
+    setData((d) => ({ ...d, links: d.links.filter((_, i) => i !== idx) }));
+  }
+
   async function uploadFile(file: File, prefix: "logo" | "cover") {
     const ext = file.name.split(".").pop();
     const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
@@ -164,10 +197,34 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
         <Field label="Cidade (opcional)">
           <input className="input" value={data.city ?? ""} onChange={(e) => set("city", e.target.value)} />
         </Field>
-        <Field label="Destaque?">
+        <Field label="Site oficial (URL principal)">
+          <input className="input" value={data.site_url ?? ""} onChange={(e) => set("site_url", e.target.value)} placeholder="https://" />
+        </Field>
+        <Field label="% de desconto em destaque (hero)">
+          <input type="number" className="input" value={data.discount_highlight ?? ""} onChange={(e) => set("discount_highlight", e.target.value === "" ? null : Number(e.target.value))} />
+        </Field>
+        <Field label="WhatsApp">
+          <input className="input" value={data.whatsapp ?? ""} onChange={(e) => set("whatsapp", e.target.value)} placeholder="https://wa.me/55..." />
+        </Field>
+        <Field label="Instagram">
+          <input className="input" value={data.instagram ?? ""} onChange={(e) => set("instagram", e.target.value)} placeholder="@usuario ou URL" />
+        </Field>
+        <Field label="E-mail">
+          <input className="input" value={data.email ?? ""} onChange={(e) => set("email", e.target.value)} />
+        </Field>
+        <Field label="Status">
+          <select className="input" value={data.status ?? "active"} onChange={(e) => set("status", e.target.value as any)}>
+            <option value="active">Ativa</option>
+            <option value="inactive">Inativa</option>
+          </select>
+        </Field>
+        <Field label="Ordem de exibição">
+          <input type="number" className="input" value={data.sort_order ?? 0} onChange={(e) => set("sort_order", Number(e.target.value))} />
+        </Field>
+        <Field label="Empresa em destaque">
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={!!data.featured} onChange={(e) => set("featured", e.target.checked)} />
-            Exibir em destaques
+            Exibir nos destaques da home
           </label>
         </Field>
       </Section>
@@ -222,11 +279,42 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
                 <Field label="Link de redirecionamento">
                   <input className="input" value={p.redirect_url} onChange={(e) => updatePromo(idx, { redirect_url: e.target.value })} placeholder="https://" />
                 </Field>
-                <Field label="% de desconto">
-                  <input type="number" className="input" value={p.discount_percent ?? ""} onChange={(e) => updatePromo(idx, { discount_percent: e.target.value === "" ? null : Number(e.target.value) })} />
+                <Field label="Tipo de promoção">
+                  <select className="input" value={p.type ?? "cupom"} onChange={(e) => updatePromo(idx, { type: e.target.value as any })}>
+                    <option value="cupom">Cupom de desconto</option>
+                    <option value="cashback">Cashback</option>
+                    <option value="frete_gratis">Frete grátis</option>
+                    <option value="oferta">Oferta especial</option>
+                    <option value="percentual">Desconto percentual</option>
+                    <option value="fixo">Desconto fixo (R$)</option>
+                  </select>
                 </Field>
                 <Field label="Cupom">
                   <input className="input" value={p.coupon_code ?? ""} onChange={(e) => updatePromo(idx, { coupon_code: e.target.value })} />
+                </Field>
+                <Field label="% de desconto">
+                  <input type="number" className="input" value={p.discount_percent ?? ""} onChange={(e) => updatePromo(idx, { discount_percent: e.target.value === "" ? null : Number(e.target.value) })} />
+                </Field>
+                <Field label="Valor de desconto (R$)">
+                  <input type="number" className="input" value={p.discount_value ?? ""} onChange={(e) => updatePromo(idx, { discount_value: e.target.value === "" ? null : Number(e.target.value) })} />
+                </Field>
+                <Field label="Início">
+                  <input type="date" className="input" value={p.starts_at ?? ""} onChange={(e) => updatePromo(idx, { starts_at: e.target.value })} />
+                </Field>
+                <Field label="Validade">
+                  <input type="date" className="input" value={p.expires_at ?? ""} onChange={(e) => updatePromo(idx, { expires_at: e.target.value })} />
+                </Field>
+                <Field label="Destaque">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={!!p.featured} onChange={(e) => updatePromo(idx, { featured: e.target.checked })} />
+                    Promoção principal do hero
+                  </label>
+                </Field>
+                <Field label="Ativa">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={p.active !== false} onChange={(e) => updatePromo(idx, { active: e.target.checked })} />
+                    Exibir publicamente
+                  </label>
                 </Field>
                 <Field label="Descrição" full>
                   <textarea className="input min-h-[64px]" value={p.description ?? ""} onChange={(e) => updatePromo(idx, { description: e.target.value })} />
@@ -235,6 +323,25 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
                   <textarea className="input min-h-[64px]" value={p.rules ?? ""} onChange={(e) => updatePromo(idx, { rules: e.target.value })} />
                 </Field>
               </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Links extras" actions={
+        <button type="button" onClick={addLink} className="inline-flex items-center gap-2 rounded-full border border-[color:var(--accent)] px-4 py-2 text-sm font-semibold text-[color:var(--accent)] hover:bg-[color:var(--accent)]/5">
+          <Plus className="h-4 w-4" /> Adicionar link
+        </button>
+      }>
+        <div className="col-span-full space-y-3">
+          {data.links.length === 0 && (
+            <p className="text-sm text-[color:var(--muted-foreground)]">Nenhum link extra. Exemplos: Loja Online, Catálogo, Regulamento, Instagram, WhatsApp.</p>
+          )}
+          {data.links.map((l, idx) => (
+            <div key={idx} className="grid gap-3 rounded-xl border border-[color:var(--border)] bg-white p-4 md:grid-cols-[1fr_2fr_auto]">
+              <input className="input" placeholder="Nome do link" value={l.name} onChange={(e) => updateLink(idx, { name: e.target.value })} />
+              <input className="input" placeholder="https://" value={l.url} onChange={(e) => updateLink(idx, { url: e.target.value })} />
+              <button type="button" onClick={() => removeLink(idx)} className="rounded-lg border border-red-200 p-2 text-red-600 hover:bg-red-50" title="Remover"><Trash2 className="h-4 w-4" /></button>
             </div>
           ))}
         </div>

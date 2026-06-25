@@ -53,16 +53,23 @@ export type Database = {
           created_at: string
           cta_text: string | null
           cta_title: string | null
+          discount_highlight: number | null
+          email: string | null
           featured: boolean
           id: string
+          instagram: string | null
           logo_url: string | null
           long_description: string | null
           name: string
           persuasion_text: string | null
           rules: string | null
           short_description: string | null
+          site_url: string | null
           slug: string
+          sort_order: number
+          status: string
           updated_at: string
+          whatsapp: string | null
         }
         Insert: {
           access_count?: number
@@ -72,16 +79,23 @@ export type Database = {
           created_at?: string
           cta_text?: string | null
           cta_title?: string | null
+          discount_highlight?: number | null
+          email?: string | null
           featured?: boolean
           id?: string
+          instagram?: string | null
           logo_url?: string | null
           long_description?: string | null
           name: string
           persuasion_text?: string | null
           rules?: string | null
           short_description?: string | null
+          site_url?: string | null
           slug: string
+          sort_order?: number
+          status?: string
           updated_at?: string
+          whatsapp?: string | null
         }
         Update: {
           access_count?: number
@@ -91,16 +105,23 @@ export type Database = {
           created_at?: string
           cta_text?: string | null
           cta_title?: string | null
+          discount_highlight?: number | null
+          email?: string | null
           featured?: boolean
           id?: string
+          instagram?: string | null
           logo_url?: string | null
           long_description?: string | null
           name?: string
           persuasion_text?: string | null
           rules?: string | null
           short_description?: string | null
+          site_url?: string | null
           slug?: string
+          sort_order?: number
+          status?: string
           updated_at?: string
+          whatsapp?: string | null
         }
         Relationships: [
           {
@@ -108,6 +129,41 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_links: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+          url: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+          url: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_links_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
@@ -150,11 +206,16 @@ export type Database = {
           created_at: string
           description: string | null
           discount_percent: number | null
+          discount_value: number | null
+          expires_at: string | null
+          featured: boolean
           id: string
           redirect_url: string
           rules: string | null
           sort_order: number
+          starts_at: string | null
           title: string
+          type: string
         }
         Insert: {
           active?: boolean
@@ -163,11 +224,16 @@ export type Database = {
           created_at?: string
           description?: string | null
           discount_percent?: number | null
+          discount_value?: number | null
+          expires_at?: string | null
+          featured?: boolean
           id?: string
           redirect_url: string
           rules?: string | null
           sort_order?: number
+          starts_at?: string | null
           title: string
+          type?: string
         }
         Update: {
           active?: boolean
@@ -176,11 +242,16 @@ export type Database = {
           created_at?: string
           description?: string | null
           discount_percent?: number | null
+          discount_value?: number | null
+          expires_at?: string | null
+          featured?: boolean
           id?: string
           redirect_url?: string
           rules?: string | null
           sort_order?: number
+          starts_at?: string | null
           title?: string
+          type?: string
         }
         Relationships: [
           {
