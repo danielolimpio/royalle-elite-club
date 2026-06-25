@@ -175,6 +175,9 @@ export type Database = {
           full_name: string | null
           id: string
           plan: string | null
+          plan_type: string | null
+          subscription_active: boolean
+          subscription_started_at: string | null
           updated_at: string
           whatsapp: string | null
         }
@@ -184,6 +187,9 @@ export type Database = {
           full_name?: string | null
           id: string
           plan?: string | null
+          plan_type?: string | null
+          subscription_active?: boolean
+          subscription_started_at?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -193,6 +199,9 @@ export type Database = {
           full_name?: string | null
           id?: string
           plan?: string | null
+          plan_type?: string | null
+          subscription_active?: boolean
+          subscription_started_at?: string | null
           updated_at?: string
           whatsapp?: string | null
         }

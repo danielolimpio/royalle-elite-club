@@ -20,7 +20,7 @@ const promotionSchema = z.object({
   discount_percent: z.number().optional().nullable(),
   discount_value: z.number().optional().nullable(),
   coupon_code: z.string().optional().nullable(),
-  redirect_url: z.string().url(),
+  redirect_url: z.string().min(1),
   rules: z.string().optional().nullable(),
   sort_order: z.number().int().optional(),
   active: z.boolean().optional(),
@@ -32,7 +32,7 @@ const promotionSchema = z.object({
 const linkSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1),
-  url: z.string().url(),
+  url: z.string().min(1),
 });
 
 const companySchema = z.object({
@@ -40,8 +40,8 @@ const companySchema = z.object({
   slug: z.string().min(1),
   name: z.string().min(1),
   category_id: z.string().uuid(),
-  logo_url: z.string().url().optional().nullable(),
-  cover_url: z.string().url().optional().nullable(),
+  logo_url: z.string().optional().nullable(),
+  cover_url: z.string().optional().nullable(),
   short_description: z.string().optional().nullable(),
   long_description: z.string().optional().nullable(),
   cta_title: z.string().optional().nullable(),
@@ -50,10 +50,10 @@ const companySchema = z.object({
   rules: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   featured: z.boolean().optional(),
-  site_url: z.string().url().optional().nullable().or(z.literal("")),
+  site_url: z.string().optional().nullable(),
   whatsapp: z.string().optional().nullable(),
   instagram: z.string().optional().nullable(),
-  email: z.string().email().optional().nullable().or(z.literal("")),
+  email: z.string().optional().nullable(),
   status: z.enum(["active","inactive"]).optional(),
   sort_order: z.number().int().optional(),
   discount_highlight: z.number().optional().nullable(),
