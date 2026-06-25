@@ -22,7 +22,7 @@ type Plan = {
   highlight?: boolean;
   badge?: string;
   cta: string;
-  href: string;
+  planId: string;
   type: "individual" | "white_label";
 };
 
@@ -40,7 +40,7 @@ const individual: Plan = {
     "Suporte por WhatsApp",
   ],
   cta: "Assinar agora",
-  href: "/checkout/individual",
+  planId: "individual",
   type: "individual",
   badge: "MAIS POPULAR",
   highlight: true,
@@ -62,7 +62,7 @@ const whiteLabel: Plan[] = [
       "Validação de usuários",
     ],
     cta: "Quero esse plano",
-    href: "/checkout/inicial",
+    planId: "inicial",
     type: "white_label",
   },
   {
@@ -80,7 +80,7 @@ const whiteLabel: Plan[] = [
       "Jogos e ativações premiadas",
     ],
     cta: "Quero esse plano",
-    href: "/checkout/padrao",
+    planId: "padrao",
     type: "white_label",
   },
   {
@@ -98,7 +98,7 @@ const whiteLabel: Plan[] = [
       "Autonomia para envios de push",
     ],
     cta: "Quero esse plano",
-    href: "/checkout/avancado",
+    planId: "avancado",
     type: "white_label",
     badge: "RECOMENDADO",
     highlight: true,
@@ -118,7 +118,7 @@ const whiteLabel: Plan[] = [
       "Estratégias de comunicação",
     ],
     cta: "Falar com vendas",
-    href: "/checkout/pro",
+    planId: "pro",
     type: "white_label",
   },
 ];
@@ -151,7 +151,7 @@ function PlanosPage() {
             </h2>
           </div>
           <div className="mx-auto mt-10 grid max-w-md gap-4">
-            <PlanCard plan={individual} onSelect={() => navigate({ to: individual.href })} />
+            <PlanCard plan={individual} onSelect={() => navigate({ to: "/checkout/$plan", params: { plan: individual.planId } })} />
           </div>
         </div>
       </section>
@@ -170,7 +170,7 @@ function PlanosPage() {
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {whiteLabel.map((p) => (
-              <PlanCard key={p.id} plan={p} onSelect={() => navigate({ to: p.href })} />
+              <PlanCard key={p.id} plan={p} onSelect={() => navigate({ to: "/checkout/$plan", params: { plan: p.planId } })} />
             ))}
           </div>
         </div>
@@ -203,7 +203,7 @@ function PlanosPage() {
           <Sparkles className="h-8 w-8 text-[color:var(--gold)]" />
           <h3 className="font-display text-3xl md:text-4xl">Ainda em dúvida sobre qual plano escolher?</h3>
           <p className="max-w-xl text-white/85">Nosso time monta uma proposta personalizada para o seu público e objetivo.</p>
-          <Link to="/checkout/individual" className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold uppercase tracking-wide text-[color:var(--midnight)] hover:scale-[1.02] transition">
+          <Link to="/checkout/$plan" params={{ plan: "individual" }} className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold uppercase tracking-wide text-[color:var(--midnight)] hover:scale-[1.02] transition">
             Começar agora <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
