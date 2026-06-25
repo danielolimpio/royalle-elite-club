@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { isAdminFn } from "@/lib/admin.functions";
 import { SiteShell } from "@/components/site/SiteLayout";
-import { LayoutDashboard, Building2 } from "lucide-react";
+import { LayoutDashboard, Building2, Images } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: async () => {
@@ -16,6 +16,7 @@ function AdminLayout() {
   const nav = [
     { to: "/admin", label: "Visão geral", icon: LayoutDashboard, exact: true },
     { to: "/admin/empresas", label: "Empresas", icon: Building2 },
+    { to: "/admin/banners", label: "Banners do topo", icon: Images },
   ];
   return (
     <SiteShell>
