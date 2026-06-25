@@ -5,7 +5,7 @@ import { adminListCompaniesFn, adminDeleteCompanyFn, adminDuplicateCompanyFn } f
 import { Plus, Copy, Trash2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/admin/empresas")({
+export const Route = createFileRoute("/_authenticated/admin/empresas/")({
   component: AdminEmpresas,
 });
 
