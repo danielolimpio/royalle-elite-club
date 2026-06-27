@@ -61,7 +61,7 @@ export function SiteHeader() {
           </nav>
           <div className="hidden items-center gap-2 md:flex">
             <Link to="/login" className="px-3 py-2 text-sm font-medium text-[color:var(--foreground)] transition hover:text-[color:var(--midnight-2)]">Entrar</Link>
-            <Link to="/cadastro" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:brightness-110">Começar</Link>
+            <Link to="/checkout/$plan" params={{ plan: "individual" }} className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:brightness-110">Começar</Link>
           </div>
           <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-full border border-[color:var(--border)] xl:hidden" aria-label="Menu">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -74,7 +74,7 @@ export function SiteHeader() {
                 <Link key={n.label} to={n.href} className="rounded-md px-3 py-3 text-sm hover:bg-[color:var(--muted)]">{n.label}</Link>
               ))}
               <Link to="/login" className="mt-2 rounded-full border border-[color:var(--border)] px-4 py-3 text-center text-sm font-medium">Entrar</Link>
-              <Link to="/cadastro" className="rounded-full bg-[color:var(--accent)] px-4 py-3 text-center text-sm font-semibold text-white">Começar</Link>
+              <Link to="/checkout/$plan" params={{ plan: "individual" }} className="rounded-full bg-[color:var(--accent)] px-4 py-3 text-center text-sm font-semibold text-white">Começar</Link>
             </nav>
           </div>
         )}
@@ -110,7 +110,7 @@ export function SiteFooter() {
         </div>
         {[
           { t: "Clube", links: [["Sobre","/sobre"],["Como funciona","/servicos"],["Planos","/planos"],["Whitelabel","/whitelabel"]] },
-          { t: "Membros", links: [["Entrar","/login"],["Cadastrar","/cadastro"],["Indicar","/cadastro"],["Suporte","/contato"]] },
+          { t: "Membros", links: [["Entrar","/login"],["Cadastrar","/checkout/individual"],["Indicar","/checkout/individual"],["Suporte","/contato"]] },
           { t: "Legal", links: [["Termos de uso","/contato"],["Privacidade","/contato"],["Cookies","/contato"],["Imprensa","/contato"]] },
         ].map((col) => (
           <div key={col.t}>

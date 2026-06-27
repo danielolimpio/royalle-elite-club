@@ -243,8 +243,7 @@ function BrandMark({ name }: { name: string }) {
 function CompanyCard({ c, kicker }: { c: any; kicker?: string }) {
   return (
     <Link
-      to="/empresa/$slug"
-      params={{ slug: c.slug }}
+      to="/login"
       className="luxe-card group flex flex-col gap-3 p-6"
     >
       <div className="flex items-center gap-3">
@@ -466,7 +465,7 @@ function AllBenefits() {
           </div>
         )}
         <div className="mt-12 text-center">
-          <Link to="/dashboard" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-10 py-4 text-xs uppercase tracking-[0.3em] text-white transition hover:brightness-110">
+          <Link to="/login" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-10 py-4 text-xs uppercase tracking-[0.3em] text-white transition hover:brightness-110">
             Ver mais benefícios
           </Link>
         </div>

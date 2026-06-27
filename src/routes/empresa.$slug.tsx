@@ -120,8 +120,8 @@ function CompanyPage() {
               Para ativar este desconto, você precisa de uma assinatura ativa. Conheça os planos a partir de R$ 9,90/mês e libere todos os benefícios.
             </p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/planos" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-7 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg hover:scale-[1.02] transition">
-                Ver planos <ArrowUpRight className="h-4 w-4" />
+              <Link to="/checkout/$plan" params={{ plan: "individual" }} className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-7 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg hover:scale-[1.02] transition">
+                Cadastrar por R$ 9,90 <ArrowUpRight className="h-4 w-4" />
               </Link>
               {!user ? (
                 <Link to="/login" className="inline-flex items-center gap-2 rounded-full border border-[color:var(--midnight)] px-7 py-3 text-sm font-bold uppercase tracking-wide text-[color:var(--midnight)] hover:bg-[color:var(--midnight)] hover:text-white transition">

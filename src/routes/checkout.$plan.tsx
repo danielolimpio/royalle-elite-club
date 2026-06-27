@@ -20,6 +20,8 @@ const PLAN_DETAILS: Record<string, { name: string; price: string; type: "individ
   pro: { name: "White Label · Pro", price: "Sob consulta", type: "white_label", description: "Personalização total e integrações sob medida.", features: ["Volume ilimitado","Cartão-presente","Sorteios exclusivos","Prospecção dedicada"] },
 };
 
+const WHITE_LABEL_OPTIONS = ["inicial", "padrao", "avancado", "pro"] as const;
+
 type Form = {
   nome: string; cpf: string; email: string; emailConfirm: string;
   senha: string; senhaConfirm: string; whatsapp: string; metodo: "credit" | "pix" | "boleto";
@@ -184,6 +186,35 @@ function CheckoutPage() {
             </ul>
           </aside>
         </form>
+        <div className="mx-auto mt-16 max-w-6xl px-6">
+          <div className="rounded-3xl bg-gradient-to-br from-[color:var(--midnight)] via-[color:var(--primary)] to-[color:var(--accent)] p-8 text-white shadow-2xl md:p-10">
+            <div className="text-xs font-bold uppercase tracking-[0.35em] text-white/75">Também para empresas</div>
+            <h2 className="mt-3 font-display text-3xl md:text-4xl">Planos White Label com a sua marca</h2>
+            <p className="mt-3 max-w-2xl text-sm text-white/80">
+              Além do plano individual, sua empresa pode lançar um clube de descontos próprio para fidelizar clientes, colaboradores e assinantes.
+            </p>
+            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {WHITE_LABEL_OPTIONS.map((id) => {
+                const item = PLAN_DETAILS[id];
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => navigate({ to: "/checkout/$plan", params: { plan: id } })}
+                    className="rounded-2xl border border-white/20 bg-white/10 p-5 text-left backdrop-blur transition hover:-translate-y-1 hover:bg-white hover:text-[color:var(--midnight)]"
+                  >
+                    <div className="text-sm font-bold">{item.name.replace("White Label · ", "")}</div>
+                    <div className="mt-2 font-display text-2xl text-[color:var(--gold)]">{item.price}</div>
+                    <p className="mt-2 line-clamp-3 text-xs opacity-80">{item.description}</p>
+                    <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wide">
+                      Ver checkout <ArrowRight className="h-3.5 w-3.5" />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </section>
     </SiteShell>
   );

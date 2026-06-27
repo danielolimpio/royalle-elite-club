@@ -77,7 +77,7 @@ function LoginPage() {
               </button>
               <div className="text-center text-sm text-[color:var(--muted-foreground)]">
                 Ainda não é membro?{" "}
-                <Link to="/cadastro" className="font-semibold text-[color:var(--midnight)] underline decoration-[color:var(--gold)] underline-offset-4">
+                <Link to="/checkout/$plan" params={{ plan: "individual" }} className="font-semibold text-[color:var(--midnight)] underline decoration-[color:var(--gold)] underline-offset-4">
                   Cadastre-se
                 </Link>
               </div>

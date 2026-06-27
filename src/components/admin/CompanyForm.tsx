@@ -96,8 +96,23 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
   const saveFn = useServerFn(adminSaveCompanyFn);
   const cats = useQuery({ queryKey: ["categories"], queryFn: () => catsFn() });
 
+  const isEmptyPromo = (p: Promotion) =>
+    !p.title?.trim() &&
+    !p.redirect_url?.trim() &&
+    !p.description?.trim() &&
+    !p.coupon_code?.trim() &&
+    !p.rules?.trim() &&
+    p.discount_percent == null &&
+    p.discount_value == null;
+  const hasInvalidPromo = data.promotions.some((p) => !isEmptyPromo(p) && (!p.title?.trim() || !p.redirect_url?.trim()));
+  const savePayload = () => ({
+    ...data,
+    promotions: data.promotions.filter((p) => !isEmptyPromo(p)),
+    links: data.links.filter((l) => l.name.trim() && l.url.trim()),
+  });
+
   const save = useMutation({
-    mutationFn: () => saveFn({ data }),
+    mutationFn: () => saveFn({ data: savePayload() }),
     onSuccess: () => {
       toast.success("Empresa salva com sucesso");
       qc.invalidateQueries({ queryKey: ["admin-companies"] });
@@ -149,14 +164,14 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
     const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error } = await supabase.storage.from("company-assets").upload(path, file, { upsert: false });
     if (error) { toast.error(error.message); return; }
-    const { data: pub } = supabase.storage.from("company-assets").getPublicUrl(path);
-    set(prefix === "logo" ? "logo_url" : "cover_url", pub.publicUrl);
+    const { data: signed } = await supabase.storage.from("company-assets").createSignedUrl(path, 60 * 60 * 24 * 7);
+    set(prefix === "logo" ? "logo_url" : "cover_url", signed?.signedUrl ?? `company-assets/${path}`);
     toast.success("Imagem enviada");
   }
 
   const canSave = useMemo(
-    () => data.name && data.slug && data.category_id && data.promotions.every((p) => p.title && p.redirect_url),
-    [data],
+    () => Boolean(data.name.trim() && data.slug.trim() && data.category_id && !hasInvalidPromo),
+    [data, hasInvalidPromo],
   );
 
   return (
@@ -176,6 +191,11 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
           {save.isPending ? "Salvando…" : "Salvar empresa"}
         </button>
       </header>
+      {hasInvalidPromo && (
+        <div className="rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-800">
+          Para salvar uma promoção, preencha título e link. Se quiser cadastrar apenas a empresa agora, deixe a promoção em branco.
+        </div>
+      )}
 
       <Section title="Identificação">
         <Field label="Nome">
