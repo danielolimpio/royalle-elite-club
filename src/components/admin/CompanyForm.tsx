@@ -164,8 +164,8 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
     const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error } = await supabase.storage.from("company-assets").upload(path, file, { upsert: false });
     if (error) { toast.error(error.message); return; }
-    const { data: pub } = supabase.storage.from("company-assets").getPublicUrl(path);
-    set(prefix === "logo" ? "logo_url" : "cover_url", pub.publicUrl);
+    const { data: signed } = await supabase.storage.from("company-assets").createSignedUrl(path, 60 * 60 * 24 * 7);
+    set(prefix === "logo" ? "logo_url" : "cover_url", signed?.signedUrl ?? `company-assets/${path}`);
     toast.success("Imagem enviada");
   }
 
