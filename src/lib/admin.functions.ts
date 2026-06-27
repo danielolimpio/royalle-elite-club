@@ -152,6 +152,10 @@ export const adminSaveCompanyFn = createServerFn({ method: "POST" })
     for (const k of ["site_url","email","logo_url","cover_url"]) {
       if (payload[k] === "") payload[k] = null;
     }
+    for (const k of ["logo_url","cover_url"]) {
+      const path = getCompanyAssetPath(payload[k]);
+      if (path) payload[k] = `${COMPANY_ASSETS_BUCKET}/${path}`;
+    }
     let companyId = id;
     if (companyId) {
       const { error } = await context.supabase.from("companies").update(payload).eq("id", companyId);
@@ -278,6 +282,8 @@ export const adminSaveBannerFn = createServerFn({ method: "POST" })
     for (const k of ["link_url","title","subtitle","alt"]) {
       if (row[k] === "") row[k] = null;
     }
+    const imagePath = getCompanyAssetPath(row.image_url);
+    if (imagePath) row.image_url = `${COMPANY_ASSETS_BUCKET}/${imagePath}`;
     if (id) {
       const { error } = await context.supabase.from("hero_banners").update(row).eq("id", id);
       if (error) throw error;
