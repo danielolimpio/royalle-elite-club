@@ -10,7 +10,7 @@ function getPublicClient() {
 }
 
 const COMPANY_COLS =
-  "id, slug, name, category_id, logo_url, cover_url, short_description, long_description, cta_title, cta_text, persuasion_text, rules, city, featured, access_count, created_at, site_url, whatsapp, instagram, email, status, sort_order, discount_highlight";
+  "id, slug, name, category_id, logo_url, cover_url, short_description, long_description, cta_title, cta_text, persuasion_text, rules, city, featured, access_count, created_at, site_url, instagram, status, sort_order, discount_highlight";
 
 export const listCategoriesFn = createServerFn({ method: "GET" }).handler(async () => {
   const sb = getPublicClient();
@@ -87,7 +87,7 @@ export const getCompanyBySlugFn = createServerFn({ method: "GET" })
     if (!company) return null;
     const { data: promos } = await sb
       .from("promotions")
-      .select("id, title, description, type, discount_percent, discount_value, coupon_code, redirect_url, rules, sort_order, active, featured, starts_at, expires_at")
+      .select("id, title, description, type, discount_percent, discount_value, rules, sort_order, active, featured, starts_at, expires_at")
       .eq("company_id", company.id)
       .eq("active", true)
       .order("sort_order");
