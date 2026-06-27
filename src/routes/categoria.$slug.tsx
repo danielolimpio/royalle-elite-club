@@ -50,7 +50,7 @@ function CategoryPage() {
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {q.data.map((c) => (
-              <Link key={c.id} to="/empresa/$slug" params={{ slug: c.slug }} className="group flex flex-col gap-3 rounded-2xl border border-[color:var(--border)] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+              <Link key={c.id} to="/login" className="group flex flex-col gap-3 rounded-2xl border border-[color:var(--border)] bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
                 <div className="flex items-center gap-3">
                   {c.logo_url ? (
                     <img src={c.logo_url} alt={c.name} className="h-12 w-12 rounded-lg object-cover" />

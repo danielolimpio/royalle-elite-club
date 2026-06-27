@@ -1,8 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Check, Crown, Sparkles } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteLayout";
 
 export const Route = createFileRoute("/cadastro")({
+  beforeLoad: () => {
+    throw redirect({ to: "/checkout/$plan", params: { plan: "individual" } });
+  },
   head: () => ({ meta: [{ title: "Planos — Royalle Club" }, { name: "description", content: "Escolha o seu plano Royalle." }] }),
   component: PlansPage,
 });
