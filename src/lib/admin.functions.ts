@@ -2,6 +2,35 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+const COMPANY_ASSETS_BUCKET = "company-assets";
+
+function getCompanyAssetPath(value?: string | null) {
+  if (!value) return null;
+  if (value.startsWith(`${COMPANY_ASSETS_BUCKET}/`)) return value.slice(COMPANY_ASSETS_BUCKET.length + 1);
+  const marker = `/storage/v1/object/public/${COMPANY_ASSETS_BUCKET}/`;
+  const signedMarker = `/storage/v1/object/sign/${COMPANY_ASSETS_BUCKET}/`;
+  const markerIndex = value.indexOf(marker);
+  if (markerIndex >= 0) return decodeURIComponent(value.slice(markerIndex + marker.length).split("?")[0]);
+  const signedIndex = value.indexOf(signedMarker);
+  if (signedIndex >= 0) return decodeURIComponent(value.slice(signedIndex + signedMarker.length).split("?")[0]);
+  return null;
+}
+
+async function resolveCompanyAssetUrl(supabase: any, value?: string | null) {
+  const path = getCompanyAssetPath(value);
+  if (!path) return value ?? null;
+  const { data } = await supabase.storage.from(COMPANY_ASSETS_BUCKET).createSignedUrl(path, 60 * 60 * 24 * 7);
+  return data?.signedUrl ?? value ?? null;
+}
+
+async function resolveAdminCompanyAssets<T extends { logo_url?: string | null; cover_url?: string | null }>(supabase: any, row: T) {
+  const [logo_url, cover_url] = await Promise.all([
+    resolveCompanyAssetUrl(supabase, row.logo_url),
+    resolveCompanyAssetUrl(supabase, row.cover_url),
+  ]);
+  return { ...row, logo_url, cover_url };
+}
+
 async function assertAdmin(supabase: any, userId: string) {
   const { data, error } = await supabase
     .from("user_roles")
@@ -83,7 +112,7 @@ export const adminListCompaniesFn = createServerFn({ method: "GET" })
       .select("id, slug, name, category_id, logo_url, featured, access_count, created_at, categories(slug, name)")
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return data ?? [];
+    return Promise.all((data ?? []).map((row: any) => resolveAdminCompanyAssets(context.supabase, row)));
   });
 
 export const adminGetCompanyFn = createServerFn({ method: "GET" })
@@ -108,7 +137,8 @@ export const adminGetCompanyFn = createServerFn({ method: "GET" })
       .select("*")
       .eq("company_id", company.id)
       .order("sort_order");
-    return { ...company, promotions: promotions ?? [], links: links ?? [] };
+    const resolvedCompany = await resolveAdminCompanyAssets(context.supabase, company);
+    return { ...resolvedCompany, promotions: promotions ?? [], links: links ?? [] };
   });
 
 export const adminSaveCompanyFn = createServerFn({ method: "POST" })

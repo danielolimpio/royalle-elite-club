@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Check, Crown, Sparkles } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteLayout";
 
