@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 function getPublicClient() {
   return createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, {
@@ -10,7 +11,7 @@ function getPublicClient() {
 }
 
 const COMPANY_COLS =
-  "id, slug, name, category_id, logo_url, cover_url, short_description, long_description, cta_title, cta_text, persuasion_text, rules, city, featured, access_count, created_at, site_url, whatsapp, instagram, email, status, sort_order, discount_highlight";
+  "id, slug, name, category_id, logo_url, cover_url, short_description, long_description, cta_title, cta_text, persuasion_text, rules, city, featured, access_count, created_at, site_url, instagram, status, sort_order, discount_highlight";
 
 export const listCategoriesFn = createServerFn({ method: "GET" }).handler(async () => {
   const sb = getPublicClient();
@@ -87,7 +88,7 @@ export const getCompanyBySlugFn = createServerFn({ method: "GET" })
     if (!company) return null;
     const { data: promos } = await sb
       .from("promotions")
-      .select("id, title, description, type, discount_percent, discount_value, coupon_code, redirect_url, rules, sort_order, active, featured, starts_at, expires_at")
+      .select("id, title, description, type, discount_percent, discount_value, rules, sort_order, active, featured, starts_at, expires_at")
       .eq("company_id", company.id)
       .eq("active", true)
       .order("sort_order");
@@ -177,4 +178,37 @@ export const incrementAccessFn = createServerFn({ method: "POST" })
       .update({ access_count: (c.access_count ?? 0) + 1 })
       .eq("id", c.id);
     return { ok: true };
+  });
+
+// Subscriber-only fetch: returns coupon codes, redirect URLs, and contact details
+// for a single company. Requires an authenticated user with an active subscription.
+export const getCompanySubscriberDetailsFn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ slug: z.string() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: profile } = await context.supabase
+      .from("profiles")
+      .select("subscription_active")
+      .eq("id", context.userId)
+      .maybeSingle();
+    if (!profile?.subscription_active) {
+      throw new Response("Subscription required", { status: 403 });
+    }
+    const { data: company, error } = await context.supabase
+      .from("companies")
+      .select("id, slug, email, whatsapp")
+      .eq("slug", data.slug)
+      .maybeSingle();
+    if (error) throw error;
+    if (!company) return null;
+    const { data: promos } = await context.supabase
+      .from("promotions")
+      .select("id, coupon_code, redirect_url")
+      .eq("company_id", company.id)
+      .eq("active", true);
+    return {
+      email: company.email,
+      whatsapp: company.whatsapp,
+      promotions: promos ?? [],
+    };
   });

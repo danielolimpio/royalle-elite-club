@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getCompanyBySlugFn, incrementAccessFn } from "@/lib/companies.functions";
+import { getCompanyBySlugFn, incrementAccessFn, getCompanySubscriberDetailsFn } from "@/lib/companies.functions";
 import { getMyProfileFn } from "@/lib/account.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { SiteShell } from "@/components/site/SiteLayout";
@@ -37,6 +37,7 @@ function CompanyPage() {
   const fn = useServerFn(getCompanyBySlugFn);
   const incFn = useServerFn(incrementAccessFn);
   const profileFn = useServerFn(getMyProfileFn);
+  const subDetailsFn = useServerFn(getCompanySubscriberDetailsFn);
   const q = useQuery({ queryKey: ["company", slug], queryFn: () => fn({ data: { slug } }) });
   const profileQ = useQuery({
     queryKey: ["my-profile", user?.id],
@@ -54,8 +55,21 @@ function CompanyPage() {
   const isSubscribed = !!profileQ.data?.subscription_active;
   const showPaywall = !authLoading && (!user || (!profileQ.isLoading && !isSubscribed));
 
+  const detailsQ = useQuery({
+    queryKey: ["company-secrets", slug, user?.id],
+    queryFn: () => subDetailsFn({ data: { slug } }),
+    enabled: !!user && isSubscribed,
+  });
+  const secretByPromoId = new Map<string, { coupon_code: string | null; redirect_url: string | null }>(
+    (detailsQ.data?.promotions ?? []).map((p: any) => [p.id, { coupon_code: p.coupon_code, redirect_url: p.redirect_url }]),
+  );
+  const withSecrets = (p: any) => {
+    const s = secretByPromoId.get(p.id);
+    return s ? { ...p, coupon_code: s.coupon_code, redirect_url: s.redirect_url } : p;
+  };
+
   const meta = getCategoryMeta((c as any).categories?.slug);
-  const promos: any[] = (c as any).promotions ?? [];
+  const promos: any[] = ((c as any).promotions ?? []).map(withSecrets);
   const links: any[] = (c as any).links ?? [];
   const featured = promos.find((p) => p.featured) ?? promos[0];
   const others = promos.filter((p) => p !== featured);
