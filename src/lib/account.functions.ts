@@ -24,13 +24,13 @@ export const activateSubscriptionFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("profiles")
-      .update({
+      .upsert({
+        id: context.userId,
         plan: data.plan,
         plan_type: data.planType,
         subscription_active: true,
         subscription_started_at: new Date().toISOString(),
       })
-      .eq("id", context.userId);
     if (error) throw error;
     return { ok: true };
   });
