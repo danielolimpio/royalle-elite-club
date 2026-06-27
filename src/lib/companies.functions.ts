@@ -10,6 +10,45 @@ function getPublicClient() {
   });
 }
 
+const COMPANY_ASSETS_BUCKET = "company-assets";
+
+function getCompanyAssetPath(value?: string | null) {
+  if (!value) return null;
+  if (value.startsWith(`${COMPANY_ASSETS_BUCKET}/`)) return value.slice(COMPANY_ASSETS_BUCKET.length + 1);
+  const marker = `/storage/v1/object/public/${COMPANY_ASSETS_BUCKET}/`;
+  const signedMarker = `/storage/v1/object/sign/${COMPANY_ASSETS_BUCKET}/`;
+  const markerIndex = value.indexOf(marker);
+  if (markerIndex >= 0) return decodeURIComponent(value.slice(markerIndex + marker.length).split("?")[0]);
+  const signedIndex = value.indexOf(signedMarker);
+  if (signedIndex >= 0) return decodeURIComponent(value.slice(signedIndex + signedMarker.length).split("?")[0]);
+  return null;
+}
+
+async function resolveCompanyAssetUrl(sb: ReturnType<typeof getPublicClient>, value?: string | null) {
+  const path = getCompanyAssetPath(value);
+  if (!path) return value ?? null;
+  const { data } = await sb.storage.from(COMPANY_ASSETS_BUCKET).createSignedUrl(path, 60 * 60 * 24 * 7);
+  return data?.signedUrl ?? value ?? null;
+}
+
+async function resolveCompanyAssets<T extends { logo_url?: string | null; cover_url?: string | null }>(
+  sb: ReturnType<typeof getPublicClient>,
+  row: T,
+) {
+  const [logo_url, cover_url] = await Promise.all([
+    resolveCompanyAssetUrl(sb, row.logo_url),
+    resolveCompanyAssetUrl(sb, row.cover_url),
+  ]);
+  return { ...row, logo_url, cover_url };
+}
+
+async function resolveCompaniesAssets<T extends { logo_url?: string | null; cover_url?: string | null }>(
+  sb: ReturnType<typeof getPublicClient>,
+  rows: T[] | null,
+) {
+  return Promise.all((rows ?? []).map((row) => resolveCompanyAssets(sb, row)));
+}
+
 const COMPANY_COLS =
   "id, slug, name, category_id, logo_url, cover_url, short_description, long_description, cta_title, cta_text, persuasion_text, rules, city, featured, access_count, created_at, site_url, instagram, status, sort_order, discount_highlight";
 
@@ -28,7 +67,10 @@ export const listHeroBannersFn = createServerFn({ method: "GET" }).handler(async
     .eq("active", true)
     .order("sort_order");
   if (error) throw error;
-  return data ?? [];
+  return Promise.all((data ?? []).map(async (banner) => ({
+    ...banner,
+    image_url: await resolveCompanyAssetUrl(sb, banner.image_url),
+  })));
 });
 
 export const listCompaniesByPlacementFn = createServerFn({ method: "GET" })
@@ -48,7 +90,7 @@ export const listCompaniesByPlacementFn = createServerFn({ method: "GET" })
       .order("sort_order")
       .limit(data.limit ?? 24);
     if (error) throw error;
-    return rows ?? [];
+    return resolveCompaniesAssets(sb, rows ?? []);
   });
 
 export const listCompaniesFn = createServerFn({ method: "GET" })
@@ -64,7 +106,7 @@ export const listCompaniesFn = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }) => {
     const sb = getPublicClient();
-    let q = sb.from("companies").select(`${COMPANY_COLS}, categories!inner(slug, name)`);
+    let q = sb.from("companies").select(`${COMPANY_COLS}, categories!inner(slug, name)`).eq("status", "active");
     if (data.categorySlug) q = q.eq("categories.slug", data.categorySlug);
     if (data.city && data.city !== "Todas") q = q.eq("city", data.city);
     const order = data.orderBy ?? "created_at";
@@ -72,7 +114,7 @@ export const listCompaniesFn = createServerFn({ method: "GET" })
     if (data.limit) q = q.limit(data.limit);
     const { data: rows, error } = await q;
     if (error) throw error;
-    return rows ?? [];
+    return resolveCompaniesAssets(sb, rows ?? []);
   });
 
 export const getCompanyBySlugFn = createServerFn({ method: "GET" })
@@ -83,6 +125,7 @@ export const getCompanyBySlugFn = createServerFn({ method: "GET" })
       .from("companies")
       .select(`${COMPANY_COLS}, categories(slug, name)`)
       .eq("slug", data.slug)
+      .eq("status", "active")
       .maybeSingle();
     if (error) throw error;
     if (!company) return null;
@@ -97,7 +140,8 @@ export const getCompanyBySlugFn = createServerFn({ method: "GET" })
       .select("id, name, url, sort_order")
       .eq("company_id", company.id)
       .order("sort_order");
-    return { ...company, promotions: promos ?? [], links: links ?? [] };
+    const resolvedCompany = await resolveCompanyAssets(sb, company);
+    return { ...resolvedCompany, promotions: promos ?? [], links: links ?? [] };
   });
 
 export const getMostAccessedFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -106,6 +150,7 @@ export const getMostAccessedFn = createServerFn({ method: "GET" }).handler(async
   const { data, error } = await sb
     .from("companies")
     .select(`${COMPANY_COLS}, categories(slug, name)`)
+    .eq("status", "active")
     .order("access_count", { ascending: false })
     .limit(60);
   if (error) throw error;
@@ -117,7 +162,7 @@ export const getMostAccessedFn = createServerFn({ method: "GET" }).handler(async
     out.push(row);
     if (out.length >= 12) break;
   }
-  return out;
+  return resolveCompaniesAssets(sb, out);
 });
 
 export const getRecentFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -125,6 +170,7 @@ export const getRecentFn = createServerFn({ method: "GET" }).handler(async () =>
   const { data, error } = await sb
     .from("companies")
     .select(`${COMPANY_COLS}, categories(slug, name)`)
+    .eq("status", "active")
     .order("created_at", { ascending: false })
     .limit(12);
   if (error) throw error;
@@ -148,7 +194,7 @@ export const getRecentFn = createServerFn({ method: "GET" }).handler(async () =>
       }
     }
   }
-  return out;
+  return resolveCompaniesAssets(sb, out);
 });
 
 export const getSpecialMomentsFn = createServerFn({ method: "GET" }).handler(async () => {
@@ -157,10 +203,11 @@ export const getSpecialMomentsFn = createServerFn({ method: "GET" }).handler(asy
     .from("companies")
     .select(`${COMPANY_COLS}, categories(slug, name)`)
     .eq("featured", true)
+    .eq("status", "active")
     .order("created_at", { ascending: false })
     .limit(12);
   if (error) throw error;
-  return data ?? [];
+  return resolveCompaniesAssets(sb, data ?? []);
 });
 
 export const incrementAccessFn = createServerFn({ method: "POST" })
