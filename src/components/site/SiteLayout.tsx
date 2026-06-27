@@ -110,7 +110,7 @@ export function SiteFooter() {
         </div>
         {[
           { t: "Clube", links: [["Sobre","/sobre"],["Como funciona","/servicos"],["Planos","/planos"],["Whitelabel","/whitelabel"]] },
-          { t: "Membros", links: [["Entrar","/login"],["Cadastrar","/cadastro"],["Indicar","/cadastro"],["Suporte","/contato"]] },
+          { t: "Membros", links: [["Entrar","/login"],["Cadastrar","/checkout/individual"],["Indicar","/checkout/individual"],["Suporte","/contato"]] },
           { t: "Legal", links: [["Termos de uso","/contato"],["Privacidade","/contato"],["Cookies","/contato"],["Imprensa","/contato"]] },
         ].map((col) => (
           <div key={col.t}>
