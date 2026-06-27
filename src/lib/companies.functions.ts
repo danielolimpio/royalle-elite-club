@@ -179,3 +179,36 @@ export const incrementAccessFn = createServerFn({ method: "POST" })
       .eq("id", c.id);
     return { ok: true };
   });
+
+// Subscriber-only fetch: returns coupon codes, redirect URLs, and contact details
+// for a single company. Requires an authenticated user with an active subscription.
+export const getCompanySubscriberDetailsFn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ slug: z.string() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: profile } = await context.supabase
+      .from("profiles")
+      .select("subscription_active")
+      .eq("id", context.userId)
+      .maybeSingle();
+    if (!profile?.subscription_active) {
+      throw new Response("Subscription required", { status: 403 });
+    }
+    const { data: company, error } = await context.supabase
+      .from("companies")
+      .select("id, slug, email, whatsapp")
+      .eq("slug", data.slug)
+      .maybeSingle();
+    if (error) throw error;
+    if (!company) return null;
+    const { data: promos } = await context.supabase
+      .from("promotions")
+      .select("id, coupon_code, redirect_url")
+      .eq("company_id", company.id)
+      .eq("active", true);
+    return {
+      email: company.email,
+      whatsapp: company.whatsapp,
+      promotions: promos ?? [],
+    };
+  });
