@@ -203,9 +203,16 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
           {save.isPending ? "Salvando…" : "Salvar empresa"}
         </button>
       </header>
+      {missingBasics.length > 0 && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          Preencha para salvar: <strong>{missingBasics.join(", ")}</strong>.
+        </div>
+      )}
       {hasInvalidPromo && (
         <div className="rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-800">
-          Para salvar uma promoção, preencha título e link. Se quiser cadastrar apenas a empresa agora, deixe a promoção em branco.
+          Para salvar {invalidPromos.length === 1 ? "a promoção" : "as promoções"}{" "}
+          <strong>{invalidPromos.map(({ i }) => `#${i + 1}`).join(", ")}</strong>, preencha título e link.
+          Você também pode remover a promoção e salvar só os dados da empresa.
         </div>
       )}
 
