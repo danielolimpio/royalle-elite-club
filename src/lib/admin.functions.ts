@@ -41,6 +41,11 @@ async function assertAdmin(supabase: any, userId: string) {
   if (error || !data) throw new Error("Forbidden: admin role required");
 }
 
+async function getAdminDb() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin;
+}
+
 const promotionSchema = z.object({
   id: z.string().uuid().optional(),
   title: z.string().min(1),
@@ -107,12 +112,13 @@ export const adminListCompaniesFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { data, error } = await context.supabase
+    const db = await getAdminDb();
+    const { data, error } = await db
       .from("companies")
       .select("id, slug, name, category_id, logo_url, featured, access_count, created_at, categories(slug, name)")
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return Promise.all((data ?? []).map((row: any) => resolveAdminCompanyAssets(context.supabase, row)));
+    return Promise.all((data ?? []).map((row: any) => resolveAdminCompanyAssets(db, row)));
   });
 
 export const adminGetCompanyFn = createServerFn({ method: "GET" })
@@ -120,24 +126,25 @@ export const adminGetCompanyFn = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { data: company, error } = await context.supabase
+    const db = await getAdminDb();
+    const { data: company, error } = await db
       .from("companies")
       .select("*")
       .eq("id", data.id)
       .maybeSingle();
     if (error) throw error;
     if (!company) return null;
-    const { data: promotions } = await context.supabase
+    const { data: promotions } = await db
       .from("promotions")
       .select("*")
       .eq("company_id", company.id)
       .order("sort_order");
-    const { data: links } = await context.supabase
+    const { data: links } = await db
       .from("company_links")
       .select("*")
       .eq("company_id", company.id)
       .order("sort_order");
-    const resolvedCompany = await resolveAdminCompanyAssets(context.supabase, company);
+    const resolvedCompany = await resolveAdminCompanyAssets(db, company);
     return { ...resolvedCompany, promotions: promotions ?? [], links: links ?? [] };
   });
 
@@ -146,6 +153,7 @@ export const adminSaveCompanyFn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => companySchema.parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
+    const db = await getAdminDb();
     const { promotions, links, id, ...rawPayload } = data;
     const payload: any = { ...rawPayload };
     // Normalize empty strings
@@ -158,10 +166,10 @@ export const adminSaveCompanyFn = createServerFn({ method: "POST" })
     }
     let companyId = id;
     if (companyId) {
-      const { error } = await context.supabase.from("companies").update(payload).eq("id", companyId);
+      const { error } = await db.from("companies").update(payload).eq("id", companyId);
       if (error) throw error;
     } else {
-      const { data: ins, error } = await context.supabase
+      const { data: ins, error } = await db
         .from("companies")
         .insert(payload)
         .select("id")
@@ -170,7 +178,8 @@ export const adminSaveCompanyFn = createServerFn({ method: "POST" })
       companyId = ins.id;
     }
     // upsert promotions: simplest — delete all then re-insert
-    await context.supabase.from("promotions").delete().eq("company_id", companyId);
+    const { error: deletePromotionsError } = await db.from("promotions").delete().eq("company_id", companyId);
+    if (deletePromotionsError) throw deletePromotionsError;
     if (promotions.length) {
       const rows = promotions.map((p, idx) => ({
         company_id: companyId!,
@@ -188,10 +197,11 @@ export const adminSaveCompanyFn = createServerFn({ method: "POST" })
         starts_at: p.starts_at || null,
         expires_at: p.expires_at || null,
       }));
-      const { error } = await context.supabase.from("promotions").insert(rows);
+      const { error } = await db.from("promotions").insert(rows);
       if (error) throw error;
     }
-    await context.supabase.from("company_links").delete().eq("company_id", companyId);
+    const { error: deleteLinksError } = await db.from("company_links").delete().eq("company_id", companyId);
+    if (deleteLinksError) throw deleteLinksError;
     if (links.length) {
       const linkRows = links.map((l, idx) => ({
         company_id: companyId!,
@@ -199,7 +209,7 @@ export const adminSaveCompanyFn = createServerFn({ method: "POST" })
         url: l.url,
         sort_order: idx,
       }));
-      const { error } = await context.supabase.from("company_links").insert(linkRows);
+      const { error } = await db.from("company_links").insert(linkRows);
       if (error) throw error;
     }
     return { id: companyId };
@@ -210,7 +220,8 @@ export const adminDeleteCompanyFn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { error } = await context.supabase.from("companies").delete().eq("id", data.id);
+    const db = await getAdminDb();
+    const { error } = await db.from("companies").delete().eq("id", data.id);
     if (error) throw error;
     return { ok: true };
   });
@@ -220,7 +231,8 @@ export const adminDuplicateCompanyFn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase, context.userId);
-    const { data: src } = await context.supabase
+    const db = await getAdminDb();
+    const { data: src } = await db
       .from("companies")
       .select("*")
       .eq("id", data.id)
@@ -228,18 +240,18 @@ export const adminDuplicateCompanyFn = createServerFn({ method: "POST" })
     if (!src) throw new Error("Empresa não encontrada");
     const { id, created_at, updated_at, access_count, slug, name, ...rest } = src as any;
     const newSlug = `${slug}-copia-${Date.now().toString(36)}`;
-    const { data: ins, error } = await context.supabase
+    const { data: ins, error } = await db
       .from("companies")
       .insert({ ...rest, slug: newSlug, name: `${name} (cópia)`, access_count: 0 })
       .select("id")
       .single();
     if (error) throw error;
-    const { data: srcPromos } = await context.supabase
+    const { data: srcPromos } = await db
       .from("promotions")
       .select("title, description, discount_percent, coupon_code, redirect_url, rules, sort_order, active")
       .eq("company_id", data.id);
     if (srcPromos && srcPromos.length) {
-      await context.supabase
+      await db
         .from("promotions")
         .insert(srcPromos.map((p) => ({ ...p, company_id: ins.id })));
     }
