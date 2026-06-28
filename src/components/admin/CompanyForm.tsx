@@ -75,7 +75,7 @@ const empty: CompanyData = {
   sort_order: 0,
   discount_highlight: null,
   placements: [],
-  promotions: [{ title: "", redirect_url: "", active: true, type: "cupom", featured: true }],
+  promotions: [],
   links: [],
 };
 
@@ -104,7 +104,10 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
     !p.rules?.trim() &&
     p.discount_percent == null &&
     p.discount_value == null;
-  const hasInvalidPromo = data.promotions.some((p) => !isEmptyPromo(p) && (!p.title?.trim() || !p.redirect_url?.trim()));
+  const invalidPromos = data.promotions
+    .map((p, i) => ({ p, i }))
+    .filter(({ p }) => !isEmptyPromo(p) && (!p.title?.trim() || !p.redirect_url?.trim()));
+  const hasInvalidPromo = invalidPromos.length > 0;
   const savePayload = () => ({
     ...data,
     promotions: data.promotions.filter((p) => !isEmptyPromo(p)),
@@ -118,7 +121,12 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
       qc.invalidateQueries({ queryKey: ["admin-companies"] });
       navigate({ to: "/admin/empresas" });
     },
-    onError: (e: any) => toast.error(e.message ?? "Erro ao salvar"),
+    onError: (e: any) => {
+      const msg = e?.message || e?.cause?.message || "Erro ao salvar";
+      toast.error(msg, { duration: 8000 });
+      // eslint-disable-next-line no-console
+      console.error("[admin] save company error", e);
+    },
   });
 
   function set<K extends keyof CompanyData>(k: K, v: CompanyData[K]) {
@@ -169,9 +177,13 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
     toast.success("Imagem enviada");
   }
 
+  const missingBasics: string[] = [];
+  if (!data.name.trim()) missingBasics.push("Nome");
+  if (!data.slug.trim()) missingBasics.push("Slug");
+  if (!data.category_id) missingBasics.push("Categoria");
   const canSave = useMemo(
-    () => Boolean(data.name.trim() && data.slug.trim() && data.category_id && !hasInvalidPromo),
-    [data, hasInvalidPromo],
+    () => missingBasics.length === 0 && !hasInvalidPromo,
+    [missingBasics.length, hasInvalidPromo],
   );
 
   return (
@@ -191,9 +203,16 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
           {save.isPending ? "Salvando…" : "Salvar empresa"}
         </button>
       </header>
+      {missingBasics.length > 0 && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          Preencha para salvar: <strong>{missingBasics.join(", ")}</strong>.
+        </div>
+      )}
       {hasInvalidPromo && (
         <div className="rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm text-orange-800">
-          Para salvar uma promoção, preencha título e link. Se quiser cadastrar apenas a empresa agora, deixe a promoção em branco.
+          Para salvar {invalidPromos.length === 1 ? "a promoção" : "as promoções"}{" "}
+          <strong>{invalidPromos.map(({ i }) => `#${i + 1}`).join(", ")}</strong>, preencha título e link.
+          Você também pode remover a promoção e salvar só os dados da empresa.
         </div>
       )}
 
