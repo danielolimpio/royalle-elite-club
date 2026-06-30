@@ -12,10 +12,11 @@ jobs:
       - name: Clonar o repositório
         uses: actions/checkout@v3
 
-      - name: Configurar Node.js 18
-        uses: actions/setup-node@v3
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
+          cache: 'npm'
 
       - name: Instalar dependências
         run: npm install
@@ -23,8 +24,34 @@ jobs:
       - name: Build do projeto
         run: npm run build
 
+      - name: Selecionar pasta pública para FTP
+        run: |
+          if [ -d "dist/client" ]; then
+            echo "DEPLOY_DIR=dist/client/" >> "$GITHUB_ENV"
+          elif [ -d ".output/public" ]; then
+            echo "DEPLOY_DIR=.output/public/" >> "$GITHUB_ENV"
+          elif [ -d "dist" ]; then
+            echo "DEPLOY_DIR=dist/" >> "$GITHUB_ENV"
+          else
+            echo "Nenhuma pasta pública de build encontrada." >&2
+            exit 1
+          fi
+
+      - name: Configurar fallback de rotas no Hostinger
+        run: |
+          cat > "${DEPLOY_DIR}.htaccess" <<'EOF'
+          <IfModule mod_rewrite.c>
+          RewriteEngine On
+          RewriteBase /
+          RewriteRule ^index\.html$ - [L]
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteCond %{REQUEST_FILENAME} !-d
+          RewriteRule . /index.html [L]
+          </IfModule>
+          EOF
+
       - name: Mostrar arquivos gerados
-        run: ls -la dist/
+        run: ls -la "$DEPLOY_DIR"
 
       - name: Deploy FTP para Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -33,7 +60,7 @@ jobs:
           port: 21
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          local-dir: ./dist/
+          local-dir: ${{ env.DEPLOY_DIR }}
           server-dir: /
           dangerous-clean-slate: true
           dry-run: false
