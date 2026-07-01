@@ -131,7 +131,7 @@ export const getCompanyBySlugFn = createServerFn({ method: "GET" })
     if (!company) return null;
     const { data: promos } = await sb
       .from("promotions")
-      .select("id, title, description, type, discount_percent, discount_value, rules, sort_order, active, featured, starts_at, expires_at, coupons")
+      .select("id, title, description, type, discount_percent, discount_value, rules, sort_order, active, featured, starts_at, expires_at")
       .eq("company_id", company.id)
       .eq("active", true)
       .order("sort_order");
