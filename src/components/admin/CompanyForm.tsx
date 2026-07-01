@@ -149,7 +149,7 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
   }
 
   function addPromo() {
-    setData((d) => ({ ...d, promotions: [...d.promotions, { title: "", redirect_url: "", active: true }] }));
+    setData((d) => ({ ...d, promotions: [...d.promotions, { title: "", redirect_url: "", active: true, coupons: [] }] }));
   }
 
   function duplicatePromo(idx: number) {
@@ -163,6 +163,33 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
 
   function removePromo(idx: number) {
     setData((d) => ({ ...d, promotions: d.promotions.filter((_, i) => i !== idx) }));
+  }
+
+  function addCoupon(promoIdx: number) {
+    setData((d) => ({
+      ...d,
+      promotions: d.promotions.map((p, i) =>
+        i === promoIdx ? { ...p, coupons: [...(p.coupons ?? []), { code: "", description: "", value: "", min_purchase: "" }] } : p,
+      ),
+    }));
+  }
+  function updateCoupon(promoIdx: number, cIdx: number, patch: Partial<PromoCoupon>) {
+    setData((d) => ({
+      ...d,
+      promotions: d.promotions.map((p, i) =>
+        i === promoIdx
+          ? { ...p, coupons: (p.coupons ?? []).map((c, j) => (j === cIdx ? { ...c, ...patch } : c)) }
+          : p,
+      ),
+    }));
+  }
+  function removeCoupon(promoIdx: number, cIdx: number) {
+    setData((d) => ({
+      ...d,
+      promotions: d.promotions.map((p, i) =>
+        i === promoIdx ? { ...p, coupons: (p.coupons ?? []).filter((_, j) => j !== cIdx) } : p,
+      ),
+    }));
   }
 
   function addLink() {
