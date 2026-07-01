@@ -22,6 +22,14 @@ type Promotion = {
   featured?: boolean;
   starts_at?: string | null;
   expires_at?: string | null;
+  coupons?: PromoCoupon[];
+};
+
+type PromoCoupon = {
+  code: string;
+  description?: string | null;
+  value?: string | null;
+  min_purchase?: string | null;
 };
 
 type CompanyLink = { id?: string; name: string; url: string };
