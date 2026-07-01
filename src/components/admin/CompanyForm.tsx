@@ -431,6 +431,79 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
                   <textarea className="input min-h-[64px]" value={p.rules ?? ""} onChange={(e) => updatePromo(idx, { rules: e.target.value })} />
                 </Field>
               </div>
+
+              {/* Cupons múltiplos por promoção */}
+              <div className="mt-5 rounded-xl border border-dashed border-[color:var(--accent)]/40 bg-white p-4">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-[0.2em] text-[color:var(--accent)]">Cupons desta promoção</div>
+                    <p className="text-xs text-[color:var(--muted-foreground)]">Adicione quantos cupons quiser. Ex.: VALE15, VALE20, VALE30.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => addCoupon(idx)}
+                    className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-4 py-2 text-xs font-bold uppercase tracking-wide text-white hover:brightness-110"
+                  >
+                    <Plus className="h-4 w-4" /> Adicionar cupom
+                  </button>
+                </div>
+                {(p.coupons ?? []).length === 0 ? (
+                  <p className="rounded-lg bg-[color:var(--muted)]/60 px-4 py-3 text-xs text-[color:var(--muted-foreground)]">
+                    Nenhum cupom cadastrado ainda.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {(p.coupons ?? []).map((cp, cIdx) => (
+                      <div key={cIdx} className="grid gap-3 rounded-lg border border-[color:var(--border)] bg-[color:var(--muted)]/40 p-3 md:grid-cols-[160px_1fr_130px_130px_auto]">
+                        <div>
+                          <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--accent)]">Código</div>
+                          <input
+                            className="input font-mono uppercase tracking-widest"
+                            placeholder="VALE15"
+                            value={cp.code}
+                            onChange={(e) => updateCoupon(idx, cIdx, { code: e.target.value.toUpperCase() })}
+                          />
+                        </div>
+                        <div>
+                          <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">Descrição</div>
+                          <input
+                            className="input"
+                            placeholder="Ganhe X de desconto nas compras acima de Y"
+                            value={cp.description ?? ""}
+                            onChange={(e) => updateCoupon(idx, cIdx, { description: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">Valor (R$)</div>
+                          <input
+                            className="input"
+                            placeholder="15,00"
+                            value={cp.value ?? ""}
+                            onChange={(e) => updateCoupon(idx, cIdx, { value: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--muted-foreground)]">Mín. compra</div>
+                          <input
+                            className="input"
+                            placeholder="299,00"
+                            value={cp.min_purchase ?? ""}
+                            onChange={(e) => updateCoupon(idx, cIdx, { min_purchase: e.target.value })}
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeCoupon(idx, cIdx)}
+                          className="self-end rounded-lg border border-red-200 p-2 text-red-600 hover:bg-red-50"
+                          title="Remover cupom"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
