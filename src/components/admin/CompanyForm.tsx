@@ -118,7 +118,12 @@ export function CompanyForm({ initial }: { initial?: CompanyData }) {
   const hasInvalidPromo = invalidPromos.length > 0;
   const savePayload = () => ({
     ...data,
-    promotions: data.promotions.filter((p) => !isEmptyPromo(p)),
+    promotions: data.promotions
+      .filter((p) => !isEmptyPromo(p))
+      .map((p) => ({
+        ...p,
+        coupons: (p.coupons ?? []).filter((c) => c.code?.trim()),
+      })),
     links: data.links.filter((l) => l.name.trim() && l.url.trim()),
   });
 
