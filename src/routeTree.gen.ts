@@ -18,6 +18,7 @@ import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MomentoSlugRouteImport } from './routes/momento.$slug'
+import { Route as EmpresaSlugRouteImport } from './routes/empresa.$slug'
 import { Route as DestaqueSlugRouteImport } from './routes/destaque.$slug'
 import { Route as CheckoutPlanRouteImport } from './routes/checkout.$plan'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
@@ -72,6 +73,11 @@ const IndexRoute = IndexRouteImport.update({
 const MomentoSlugRoute = MomentoSlugRouteImport.update({
   id: '/momento/$slug',
   path: '/momento/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpresaSlugRoute = EmpresaSlugRouteImport.update({
+  id: '/empresa/$slug',
+  path: '/empresa/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DestaqueSlugRoute = DestaqueSlugRouteImport.update({
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
+  '/empresa/$slug': typeof EmpresaSlugRoute
   '/momento/$slug': typeof MomentoSlugRoute
   '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
+  '/empresa/$slug': typeof EmpresaSlugRoute
   '/momento/$slug': typeof MomentoSlugRoute
   '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/checkout/$plan': typeof CheckoutPlanRoute
   '/destaque/$slug': typeof DestaqueSlugRoute
+  '/empresa/$slug': typeof EmpresaSlugRoute
   '/momento/$slug': typeof MomentoSlugRoute
   '/_authenticated/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/_authenticated/admin/empresas': typeof AuthenticatedAdminEmpresasRouteWithChildren
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
+    | '/empresa/$slug'
     | '/momento/$slug'
     | '/admin/banners'
     | '/admin/empresas'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
+    | '/empresa/$slug'
     | '/momento/$slug'
     | '/admin/banners'
     | '/admin'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/categoria/$slug'
     | '/checkout/$plan'
     | '/destaque/$slug'
+    | '/empresa/$slug'
     | '/momento/$slug'
     | '/_authenticated/admin/banners'
     | '/_authenticated/admin/empresas'
@@ -275,6 +287,7 @@ export interface RootRouteChildren {
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   CheckoutPlanRoute: typeof CheckoutPlanRoute
   DestaqueSlugRoute: typeof DestaqueSlugRoute
+  EmpresaSlugRoute: typeof EmpresaSlugRoute
   MomentoSlugRoute: typeof MomentoSlugRoute
 }
 
@@ -341,6 +354,13 @@ declare module '@tanstack/react-router' {
       path: '/momento/$slug'
       fullPath: '/momento/$slug'
       preLoaderRoute: typeof MomentoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empresa/$slug': {
+      id: '/empresa/$slug'
+      path: '/empresa/$slug'
+      fullPath: '/empresa/$slug'
+      preLoaderRoute: typeof EmpresaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/destaque/$slug': {
@@ -481,6 +501,7 @@ const rootRouteChildren: RootRouteChildren = {
   CategoriaSlugRoute: CategoriaSlugRoute,
   CheckoutPlanRoute: CheckoutPlanRoute,
   DestaqueSlugRoute: DestaqueSlugRoute,
+  EmpresaSlugRoute: EmpresaSlugRoute,
   MomentoSlugRoute: MomentoSlugRoute,
 }
 export const routeTree = rootRouteImport
