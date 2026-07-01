@@ -250,7 +250,7 @@ export const getCompanySubscriberDetailsFn = createServerFn({ method: "GET" })
     if (!company) return null;
     const { data: promos } = await context.supabase
       .from("promotions")
-      .select("id, coupon_code, redirect_url")
+      .select("id, coupon_code, redirect_url, coupons")
       .eq("company_id", company.id)
       .eq("active", true);
     return {

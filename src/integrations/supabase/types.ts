@@ -254,6 +254,7 @@ export type Database = {
           active: boolean
           company_id: string
           coupon_code: string | null
+          coupons: Json
           created_at: string
           description: string | null
           discount_percent: number | null
@@ -272,6 +273,7 @@ export type Database = {
           active?: boolean
           company_id: string
           coupon_code?: string | null
+          coupons?: Json
           created_at?: string
           description?: string | null
           discount_percent?: number | null
@@ -290,6 +292,7 @@ export type Database = {
           active?: boolean
           company_id?: string
           coupon_code?: string | null
+          coupons?: Json
           created_at?: string
           description?: string | null
           discount_percent?: number | null

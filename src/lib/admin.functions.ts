@@ -61,6 +61,12 @@ const promotionSchema = z.object({
   featured: z.boolean().optional(),
   starts_at: z.string().optional().nullable(),
   expires_at: z.string().optional().nullable(),
+  coupons: z.array(z.object({
+    code: z.string().min(1),
+    description: z.string().optional().nullable(),
+    value: z.string().optional().nullable(),
+    min_purchase: z.string().optional().nullable(),
+  })).optional().default([]),
 });
 
 const linkSchema = z.object({
@@ -196,6 +202,7 @@ export const adminSaveCompanyFn = createServerFn({ method: "POST" })
         featured: p.featured ?? false,
         starts_at: p.starts_at || null,
         expires_at: p.expires_at || null,
+        coupons: p.coupons ?? [],
       }));
       const { error } = await db.from("promotions").insert(rows);
       if (error) throw error;

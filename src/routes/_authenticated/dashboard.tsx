@@ -73,7 +73,7 @@ function DashboardPage() {
           {companies.isLoading ? (
             <div className="text-sm text-[color:var(--muted-foreground)]">Carregando…</div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {(companies.data ?? []).map((c) => {
                 const meta = getCategoryMeta((c as any).categories?.slug);
                 const Icon = meta?.icon;
@@ -82,24 +82,20 @@ function DashboardPage() {
                     key={c.id}
                     to="/empresa/$slug"
                     params={{ slug: c.slug }}
-                    className="group flex flex-col gap-3 rounded-xl bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                    className="group flex flex-col items-center gap-4 rounded-2xl border border-[color:var(--border)] bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:border-[color:var(--accent)]/40 hover:shadow-lg"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="grid h-28 w-28 place-items-center overflow-hidden rounded-2xl border border-[color:var(--border)] bg-white p-2">
                       {c.logo_url ? (
-                        <img src={c.logo_url} alt={c.name} className="h-12 w-12 rounded-lg object-cover" />
+                        <img src={c.logo_url} alt={c.name} className="h-full w-full object-contain" />
                       ) : (
-                        <div className={`grid h-12 w-12 place-items-center rounded-lg bg-gradient-to-br ${meta?.gradient ?? "from-slate-500 to-slate-700"} text-white`}>
-                          {Icon && <Icon className="h-5 w-5" />}
+                        <div className={`grid h-full w-full place-items-center rounded-xl bg-gradient-to-br ${meta?.gradient ?? "from-slate-500 to-slate-700"} text-white`}>
+                          {Icon && <Icon className="h-8 w-8" />}
                         </div>
                       )}
-                      <div>
-                        <div className="font-display text-base text-[color:var(--midnight)]">{c.name}</div>
-                        <div className="text-[0.65rem] uppercase tracking-[0.2em] text-[color:var(--accent)]">{(c as any).categories?.name}</div>
-                      </div>
                     </div>
-                    <p className="line-clamp-2 text-sm text-[color:var(--muted-foreground)]">{c.short_description ?? "Promoção exclusiva para membros."}</p>
-                    <span className="mt-auto inline-flex items-center gap-1 text-xs font-semibold text-[color:var(--accent)]">
-                      Ver promoção <ArrowUpRight className="h-3 w-3" />
+                    <div className="font-display text-lg text-[color:var(--midnight)]">{c.name}</div>
+                    <span className="mt-auto inline-flex w-full items-center justify-center gap-2 rounded-full bg-[color:var(--accent)] px-5 py-2.5 text-sm font-bold uppercase tracking-wide text-white shadow-sm transition group-hover:brightness-110">
+                      Acessar <ArrowUpRight className="h-4 w-4" />
                     </span>
                   </Link>
                 );
